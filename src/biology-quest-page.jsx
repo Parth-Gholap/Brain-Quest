@@ -1,1022 +1,813 @@
-import React, { useState, useRef } from "react";
-import confetti from "canvas-confetti";
-import { Dice1, Dice2, Dice3, Dice4, Dice5, Dice6, Home } from "lucide-react";
+// BiologyQuestGame.jsx
+import React, { useState, useEffect, useRef } from "react";
+import { Home, Microscope, AlertCircle, CheckCircle2, HelpCircle, ArrowRight } from "lucide-react";
+import "./biology-quest-page.css";
 
-// Define types
-// Player type
-// Question type
-// QuestionBox type
+// Define types for TypeScript equivalent in JSX
+// Level and QuestionType definitions
+// Question type definition with fields
 
-// Sample questions
-const sampleQuestions = [
-  // Computer Science Questions
-  {
-    id: 1,
-    text: "What does CPU stand for?",
-    options: [
-      "Central Processing Unit",
-      "Computer Personal Unit",
-      "Central Process Utility",
-      "Central Processor Utility",
-    ],
-    correctAnswer: 0,
-    difficulty: "easy",
-    subject: "cs",
-  },
-  {
-    id: 2,
-    text: "Which of these is NOT a programming language?",
-    options: ["Java", "Python", "HTML", "Photoshop"],
-    correctAnswer: 3,
-    difficulty: "easy",
-    subject: "cs",
-  },
-  {
-    id: 3,
-    text: "What is the binary representation of the decimal number 10?",
-    options: ["1010", "1000", "1100", "1001"],
-    correctAnswer: 0,
-    difficulty: "medium",
-    subject: "cs",
-  },
-  {
-    id: 4,
-    text: "What does HTTP stand for?",
-    options: [
-      "HyperText Transfer Protocol",
-      "High Tech Transfer Protocol",
-      "Hyperlink Text Transfer Protocol",
-      "HyperText Transmission Protocol",
-    ],
-    correctAnswer: 0,
-    difficulty: "medium",
-    subject: "cs",
-  },
-  {
-    id: 5,
-    text: "Which data structure operates on a Last-In-First-Out (LIFO) principle?",
-    options: ["Queue", "Stack", "Linked List", "Tree"],
-    correctAnswer: 1,
-    difficulty: "hard",
-    subject: "cs",
-  },
-
-  // Math Questions
-  {
-    id: 6,
-    text: "What is the value of π (pi) to two decimal places?",
-    options: ["3.14", "3.41", "3.12", "3.16"],
-    correctAnswer: 0,
-    difficulty: "easy",
-    subject: "math",
-  },
-  {
-    id: 7,
-    text: "What is the derivative of x²?",
-    options: ["2x", "x²", "2", "x"],
-    correctAnswer: 0,
-    difficulty: "medium",
-    subject: "math",
-  },
-  {
-    id: 8,
-    text: "If x + 3 = 8, what is the value of x?",
-    options: ["3", "5", "8", "11"],
-    correctAnswer: 1,
-    difficulty: "easy",
-    subject: "math",
-  },
-  {
-    id: 9,
-    text: "What is the integral of 2x?",
-    options: ["x² + C", "2x² + C", "x² / 2 + C", "2x + C"],
-    correctAnswer: 0,
-    difficulty: "medium",
-    subject: "math",
-  },
-  {
-    id: 10,
-    text: "What is the derivative of sin(x)?",
-    options: ["cos(x)", "-sin(x)", "tan(x)", "-cos(x)"],
-    correctAnswer: 0,
-    difficulty: "hard",
-    subject: "math",
-  },
-  {
-    id: 11,
-    text: "What is the integral of e^x?",
-    options: ["e^x + C", "xe^x + C", "e^x/x + C", "ln(x) + C"],
-    correctAnswer: 0,
-    difficulty: "hard",
-    subject: "math",
-  },
-  {
-    id: 12,
-    text: "What is the derivative of ln(x)?",
-    options: ["1/x", "x", "ln(x)/x", "e^x"],
-    correctAnswer: 0,
-    difficulty: "medium",
-    subject: "math",
-  },
-
-  // General Knowledge Questions
-  {
-    id: 13,
-    text: "Which planet is known as the Red Planet?",
-    options: ["Earth", "Mars", "Jupiter", "Venus"],
-    correctAnswer: 1,
-    difficulty: "easy",
-    subject: "gk",
-  },
-  {
-    id: 14,
-    text: "What is the capital of France?",
-    options: ["London", "Berlin", "Paris", "Madrid"],
-    correctAnswer: 2,
-    difficulty: "easy",
-    subject: "gk",
-  },
-  {
-    id: 15,
-    text: "Who painted the Mona Lisa?",
-    options: ["Vincent van Gogh", "Leonardo da Vinci", "Pablo Picasso", "Michelangelo"],
-    correctAnswer: 1,
-    difficulty: "medium",
-    subject: "gk",
-  },
-  {
-    id: 16,
-    text: "Which country has the largest population?",
-    options: ["India", "United States", "China", "Russia"],
-    correctAnswer: 2,
-    difficulty: "medium",
-    subject: "gk",
-  },
-  {
-    id: 17,
-    text: "Who wrote 'Romeo and Juliet'?",
-    options: ["Charles Dickens", "William Shakespeare", "Jane Austen", "Mark Twain"],
-    correctAnswer: 1,
-    difficulty: "medium",
-    subject: "gk",
-  },
-
-  // Biology Questions
-  {
-    id: 18,
-    text: "What is the largest organ in the human body?",
-    options: ["Heart", "Brain", "Liver", "Skin"],
-    correctAnswer: 3,
-    difficulty: "easy",
-    subject: "bio",
-  },
-  {
-    id: 19,
-    text: "What is the powerhouse of the cell?",
-    options: ["Nucleus", "Mitochondria", "Ribosome", "Endoplasmic Reticulum"],
-    correctAnswer: 1,
-    difficulty: "easy",
-    subject: "bio",
-  },
-  {
-    id: 20,
-    text: "Which of these is NOT a type of blood cell?",
-    options: ["Red blood cell", "White blood cell", "Platelet", "Neuron"],
-    correctAnswer: 3,
-    difficulty: "medium",
-    subject: "bio",
-  },
-  {
-    id: 21,
-    text: "What is the process by which plants make their own food?",
-    options: ["Respiration", "Photosynthesis", "Digestion", "Excretion"],
-    correctAnswer: 1,
-    difficulty: "medium",
-    subject: "bio",
-  },
-  {
-    id: 22,
-    text: "Which of these is NOT a part of the digestive system?",
-    options: ["Stomach", "Small Intestine", "Liver", "Lungs"],
-    correctAnswer: 3,
-    difficulty: "hard",
-    subject: "bio",
-  },
-
-  // History Questions
-  {
-    id: 23,
-    text: "In which year did World War II end?",
-    options: ["1943", "1944", "1945", "1946"],
-    correctAnswer: 2,
-    difficulty: "medium",
-    subject: "history",
-  },
-  {
-    id: 24,
-    text: "Who was the first President of the United States?",
-    options: ["Thomas Jefferson", "George Washington", "Abraham Lincoln", "John Adams"],
-    correctAnswer: 1,
-    difficulty: "easy",
-    subject: "history",
-  },
-  {
-    id: 25,
-    text: "Which ancient civilization built the pyramids?",
-    options: ["Romans", "Greeks", "Egyptians", "Mayans"],
-    correctAnswer: 2,
-    difficulty: "easy",
-    subject: "history",
-  },
-  {
-    id: 26,
-    text: "Who was the first person to step on the moon?",
-    options: ["Buzz Aldrin", "Neil Armstrong", "Yuri Gagarin", "John Glenn"],
-    correctAnswer: 1,
-    difficulty: "medium",
-    subject: "history",
-  },
-  {
-    id: 27,
-    text: "Which empire was ruled by Genghis Khan?",
-    options: ["Roman Empire", "Ottoman Empire", "Mongol Empire", "Byzantine Empire"],
-    correctAnswer: 2,
-    difficulty: "hard",
-    subject: "history",
-  },
-
-  // Science Questions
-  {
-    id: 28,
-    text: "What is the chemical symbol for gold?",
-    options: ["Go", "Gd", "Au", "Ag"],
-    correctAnswer: 2,
-    difficulty: "medium",
-    subject: "science",
-  },
-  {
-    id: 29,
-    text: "What is the hardest natural substance on Earth?",
-    options: ["Gold", "Iron", "Diamond", "Platinum"],
-    correctAnswer: 2,
-    difficulty: "medium",
-    subject: "science",
-  },
-  {
-    id: 30,
-    text: "Which of these is NOT a state of matter?",
-    options: ["Solid", "Liquid", "Gas", "Energy"],
-    correctAnswer: 3,
-    difficulty: "easy",
-    subject: "science",
-  },
-  {
-    id: 31,
-    text: "What is the speed of light approximately?",
-    options: ["300,000 km/s", "150,000 km/s", "500,000 km/s", "1,000,000 km/s"],
-    correctAnswer: 0,
-    difficulty: "hard",
-    subject: "science",
-  },
-  {
-    id: 32,
-    text: "Which element has the chemical symbol 'O'?",
-    options: ["Gold", "Oxygen", "Osmium", "Oganesson"],
-    correctAnswer: 1,
-    difficulty: "easy",
-    subject: "science",
-  },
-];
-
-// Helper function to combine classNames
-const cn = (...classes) => {
-  return classes.filter(Boolean).join(" ");
-};
-
-// Toast notification component
-const Toast = ({ message }) => {
-  return (
-    <div className="fixed bottom-4 right-4 bg-indigo-900 text-white py-2 px-4 rounded-lg shadow-lg">
-      {message}
-    </div>
-  );
-};
-
-function QuizLadderGame() {
+const BiologyQuestGame = () => {
   const [gameStarted, setGameStarted] = useState(false);
-  const [playerSetup, setPlayerSetup] = useState(true);
-  const [playerCount, setPlayerCount] = useState(2);
-  const [playerNames, setPlayerNames] = useState(["Player 1", "Player 2"]);
-  const [players, setPlayers] = useState([]);
-  const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
-  const [diceValue, setDiceValue] = useState(null);
-  const [isRolling, setIsRolling] = useState(false);
-  const [questionBoxes, setQuestionBoxes] = useState([]);
-  const [currentQuestion, setCurrentQuestion] = useState(null);
-  const [showQuestion, setShowQuestion] = useState(false);
-  const [gameOver, setGameOver] = useState(false);
-  const [winner, setWinner] = useState(null);
+  const [level, setLevel] = useState("middle");
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [gameQuestions, setGameQuestions] = useState([]);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [timeLeft, setTimeLeft] = useState(0);
+  const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
-  const [resultMessage, setResultMessage] = useState("");
-  const [resultEmoji, setResultEmoji] = useState("");
-  const [singlePlayerMode, setSinglePlayerMode] = useState(false);
-  const [botThinking, setBotThinking] = useState(false);
-  const [toast, setToast] = useState({ show: false, message: "" });
+  const [showExplanation, setShowExplanation] = useState(false);
+  const [showHint, setShowHint] = useState(false);
+  const [hintsUsed, setHintsUsed] = useState(0);
+  const [gameOver, setGameOver] = useState(false);
 
+  const timerRef = useRef(null);
   const confettiCanvasRef = useRef(null);
 
-  const playerColors = ["bg-indigo-500", "bg-rose-500", "bg-emerald-500", "bg-amber-500", "bg-purple-500"];
+  // Sample questions data
+  const biologyQuestions = [
+    // Middle School Level - Knowledge Questions
+    {
+      id: 1,
+      text: "Which organelle is known as the 'powerhouse of the cell'?",
+      options: ["Nucleus", "Mitochondria", "Golgi apparatus", "Endoplasmic reticulum"],
+      correctAnswer: 1,
+      explanation:
+        "Mitochondria are often called the powerhouse of the cell because they generate most of the cell's supply of adenosine triphosphate (ATP), which is used as a source of chemical energy.",
+      hint: "This organelle is responsible for cellular respiration and energy production.",
+      level: "middle",
+      type: "knowledge",
+      topic: "Cell Biology",
+    },
+    {
+      id: 2,
+      text: "What is the process by which plants make their own food using sunlight?",
+      options: ["Respiration", "Photosynthesis", "Fermentation", "Digestion"],
+      correctAnswer: 1,
+      explanation:
+        "Photosynthesis is the process by which green plants and some other organisms use sunlight to synthesize nutrients from carbon dioxide and water, generating oxygen as a byproduct.",
+      hint: "This process converts light energy into chemical energy.",
+      level: "middle",
+      type: "knowledge",
+      topic: "Plant Biology",
+    },
+    {
+        id: 3,
+        text: "Which of the following is NOT a function of the skeletal system?",
+        options: ["Support", "Protection", "Movement", "Digestion"],
+        correctAnswer: 3,
+        explanation:
+          "The skeletal system provides support, protection, and allows for movement, but digestion is a function of the digestive system.",
+        hint: "Think about which system processes food in the body.",
+        level: "middle",
+        type: "knowledge",
+        topic: "Human Anatomy",
+      },
+      {
+        id: 4,
+        text: "What is the main function of red blood cells?",
+        options: ["Fighting infection", "Carrying oxygen", "Blood clotting", "Producing antibodies"],
+        correctAnswer: 1,
+        explanation:
+          "Red blood cells (erythrocytes) contain hemoglobin, which binds to oxygen and transports it from the lungs to the tissues throughout the body.",
+        hint: "These cells contain hemoglobin and give blood its color.",
+        level: "middle",
+        type: "knowledge",
+        topic: "Human Physiology",
+      },
+    
+      // Middle School Level - Case Questions
+      {
+        id: 5,
+        text: "A student observes a pond sample under a microscope and sees small, green organisms moving around. These organisms are likely:",
+        options: ["Bacteria", "Fungi", "Protists", "Viruses"],
+        correctAnswer: 2,
+        explanation:
+          "Small, green, moving organisms in pond water are likely protists, specifically algae like Euglena or Chlamydomonas, which contain chloroplasts for photosynthesis and can move using flagella.",
+        hint: "These organisms are eukaryotic and some can photosynthesize.",
+        level: "middle",
+        type: "case",
+        topic: "Microbiology",
+      },
+      {
+        id: 6,
+        text: "A gardener notices that plants in a shaded area of the garden are taller and have larger leaves than the same species in a sunny area. This adaptation is most likely due to:",
+        options: [
+          "The plants trying to reach more sunlight",
+          "Genetic mutations",
+          "The soil being more fertile in the shade",
+          "Less water evaporation in the shade",
+        ],
+        correctAnswer: 0,
+        explanation:
+          "Plants in shaded areas often grow taller with larger leaves to capture more sunlight for photosynthesis. This is an example of phototropism and adaptation to low-light conditions.",
+        hint: "Think about what resource the plants might be competing for in a shaded area.",
+        level: "middle",
+        type: "case",
+        topic: "Plant Biology",
+      },
+      {
+        id: 7,
+        text: "A student notices that when they exercise, their heart rate and breathing rate increase. This response helps to:",
+        options: [
+          "Reduce body temperature",
+          "Increase oxygen delivery to muscles",
+          "Decrease carbon dioxide production",
+          "Slow down metabolism",
+        ],
+        correctAnswer: 1,
+        explanation:
+          "During exercise, muscles need more oxygen and produce more carbon dioxide. Increased heart rate delivers more oxygen-rich blood to muscles, while increased breathing rate brings in more oxygen and removes carbon dioxide.",
+        hint: "Think about what your muscles need more of during physical activity.",
+        level: "middle",
+        type: "case",
+        topic: "Human Physiology",
+      },
+    
+      // High School Level - Knowledge Questions
+      {
+        id: 8,
+        text: "Which of the following is a correct statement about DNA replication?",
+        options: [
+          "It is a conservative process",
+          "It occurs during prophase",
+          "It results in two identical DNA molecules",
+          "It requires RNA polymerase",
+        ],
+        correctAnswer: 2,
+        explanation:
+          "DNA replication is semiconservative, occurring during the S phase of the cell cycle (not prophase), and results in two identical DNA molecules. It requires DNA polymerase, not RNA polymerase.",
+        hint: "Think about the end result of the replication process.",
+        level: "high",
+        type: "knowledge",
+        topic: "Molecular Biology",
+      },
+      {
+        id: 9,
+        text: "Which of the following is NOT a component of the theory of natural selection?",
+        options: [
+          "Variation exists within populations",
+          "Organisms produce more offspring than can survive",
+          "Traits are acquired during an organism's lifetime",
+          "Beneficial traits are passed to offspring",
+        ],
+        correctAnswer: 2,
+        explanation:
+          "Natural selection involves variation, overproduction of offspring, and inheritance of beneficial traits. However, it does not include Lamarck's idea that traits acquired during an organism's lifetime can be passed to offspring.",
+        hint: "This incorrect component was proposed by Lamarck, not Darwin.",
+        level: "high",
+        type: "knowledge",
+        topic: "Evolution",
+      },
+      {
+        id: 10,
+        text: "In cellular respiration, where is the most ATP produced?",
+        options: ["Glycolysis", "Krebs cycle", "Electron transport chain", "Fermentation"],
+        correctAnswer: 2,
+        explanation:
+          "The electron transport chain produces the most ATP during cellular respiration (about 32-34 ATP), compared to glycolysis (2 ATP) and the Krebs cycle (2 ATP).",
+        hint: "This stage uses oxygen as the final electron acceptor.",
+        level: "high",
+        type: "knowledge",
+        topic: "Cell Biology",
+      },
+      {
+        id: 11,
+        text: "Which of the following best describes the function of enzymes?",
+        options: [
+          "Provide energy for cellular reactions",
+          "Increase the activation energy of reactions",
+          "Catalyze biochemical reactions",
+          "Transport molecules across cell membranes",
+        ],
+        correctAnswer: 2,
+        explanation:
+          "Enzymes are biological catalysts that speed up biochemical reactions by lowering the activation energy required, without being consumed in the reaction.",
+        hint: "These proteins speed up reactions without being consumed.",
+        level: "high",
+        type: "knowledge",
+        topic: "Biochemistry",
+      },
+    
+      // High School Level - Case Questions
+      {
+        id: 12,
+        text: "A researcher studying pea plants observes that when a plant with purple flowers (PP) is crossed with a plant with white flowers (pp), all the offspring have purple flowers. This demonstrates:",
+        options: ["Incomplete dominance", "Codominance", "Complete dominance", "Multiple alleles"],
+        correctAnswer: 2,
+        explanation:
+          "This is an example of complete dominance, where the dominant allele (P) for purple flowers completely masks the expression of the recessive allele (p) for white flowers, resulting in all purple-flowered offspring (Pp).",
+        hint: "Think about how the dominant trait is expressed in the heterozygous offspring.",
+        level: "high",
+        type: "case",
+        topic: "Genetics",
+      },
+      {
+        id: 13,
+        text: "A patient has symptoms including frequent urination, increased thirst, and high blood sugar levels. These symptoms are most consistent with:",
+        options: ["Hypothyroidism", "Diabetes mellitus", "Addison's disease", "Cushing's syndrome"],
+        correctAnswer: 1,
+        explanation:
+          "Frequent urination (polyuria), increased thirst (polydipsia), and high blood sugar (hyperglycemia) are classic symptoms of diabetes mellitus, a disorder of glucose regulation due to insufficient insulin or insulin resistance.",
+        hint: "This condition affects the body's ability to regulate blood glucose levels.",
+        level: "high",
+        type: "case",
+        topic: "Human Physiology",
+      },
+      {
+        id: 14,
+        text: "A marine biologist observes that a certain species of fish has declined in population after the introduction of a new predator species. Over several generations, the remaining fish develop faster swimming speeds. This is an example of:",
+        options: ["Genetic drift", "Gene flow", "Natural selection", "Artificial selection"],
+        correctAnswer: 2,
+        explanation:
+          "This scenario describes natural selection. The predator creates a selective pressure favoring fish that can swim faster, leading to an increase in the frequency of genes for faster swimming in the population over generations.",
+        hint: "This evolutionary mechanism involves differential survival and reproduction based on advantageous traits.",
+        level: "high",
+        type: "case",
+        topic: "Evolution",
+      },
+    
+      // Undergraduate Level - Knowledge Questions
+      {
+        id: 15,
+        text: "Which of the following is NOT involved in post-transcriptional modification of eukaryotic mRNA?",
+        options: ["Addition of a 5' cap", "Addition of a poly-A tail", "Removal of introns", "Translation"],
+        correctAnswer: 3,
+        explanation:
+          "Translation is not a post-transcriptional modification; it's the process of protein synthesis from mRNA. The other options (5' cap, poly-A tail, and intron removal through splicing) are all post-transcriptional modifications of eukaryotic mRNA.",
+        hint: "Think about which process occurs after mRNA has left the nucleus.",
+        level: "undergrad",
+        type: "knowledge",
+        topic: "Molecular Biology",
+      },
+      {
+        id: 16,
+        text: "Which of the following best describes the concept of Hardy-Weinberg equilibrium?",
+        options: [
+          "Evolution is always occurring in populations",
+          "Allele frequencies change predictably over time",
+          "Allele frequencies remain constant in the absence of evolutionary forces",
+          "Natural selection is the primary driver of evolution",
+        ],
+        correctAnswer: 2,
+        explanation:
+          "Hardy-Weinberg equilibrium states that allele and genotype frequencies in a population will remain constant from generation to generation in the absence of evolutionary forces (mutation, natural selection, genetic drift, gene flow, and non-random mating).",
+        hint: "This principle provides a theoretical baseline for measuring evolutionary change.",
+        level: "undergrad",
+        type: "knowledge",
+        topic: "Population Genetics",
+      },
+      {
+        id: 17,
+        text: "In the citric acid cycle (Krebs cycle), which molecule is oxidized to produce CO₂?",
+        options: ["Pyruvate", "Acetyl-CoA", "Citrate", "α-Ketoglutarate"],
+        correctAnswer: 3,
+        explanation:
+          "α-Ketoglutarate is oxidized and decarboxylated to form succinyl-CoA, releasing CO₂ in one of the steps of the citric acid cycle where carbon dioxide is produced.",
+        hint: "This molecule undergoes oxidative decarboxylation in the cycle.",
+        level: "undergrad",
+        type: "knowledge",
+        topic: "Biochemistry",
+      },
+      {
+        id: 18,
+        text: "Which of the following is a characteristic of paracrine signaling?",
+        options: [
+          "Signaling molecules travel through the bloodstream",
+          "Target cells are distant from the signaling cell",
+          "Signaling molecules affect only the cell that produced them",
+          "Signaling molecules affect nearby cells",
+        ],
+        correctAnswer: 3,
+        explanation:
+          "Paracrine signaling involves the release of signaling molecules that affect only nearby cells. This differs from endocrine signaling (through bloodstream to distant cells), autocrine signaling (affecting the cell that produced the signal), and direct contact signaling.",
+        hint: "This type of signaling acts locally but not on the originating cell.",
+        level: "undergrad",
+        type: "knowledge",
+        topic: "Cell Biology",
+      },
+    
+      // Undergraduate Level - Case Questions
+      {
+        id: 19,
+        text: "A researcher studying a rare genetic disorder observes that the condition appears to affect males more frequently than females and is passed from mothers to sons. This inheritance pattern is most consistent with:",
+        options: [
+          "Autosomal dominant inheritance",
+          "Autosomal recessive inheritance",
+          "X-linked recessive inheritance",
+          "Y-linked inheritance",
+        ],
+        correctAnswer: 2,
+        explanation:
+          "X-linked recessive disorders typically affect males more frequently than females because males have only one X chromosome. Females need two copies of the recessive allele to express the trait, while males need only one. The pattern of transmission from mothers to sons is also characteristic of X-linked inheritance.",
+        hint: "Think about which sex chromosome males inherit from their mothers.",
+        level: "undergrad",
+        type: "case",
+        topic: "Genetics",
+      },
+      {
+        id: 20,
+        text: "A microbiologist isolates a bacterium that can grow on minimal media containing only glucose as a carbon source. When the bacterium is exposed to lactose, there is a lag phase before it begins to metabolize lactose efficiently. This phenomenon is best explained by:",
+        options: ["Bacterial transformation", "Conjugation", "Enzyme induction", "Transduction"],
+        correctAnswer: 2,
+        explanation:
+          "This describes enzyme induction, specifically the lac operon in E. coli. When lactose is present, it induces the expression of genes needed to metabolize lactose. The lag phase represents the time needed for the bacterium to synthesize these enzymes.",
+        hint: "This process involves the regulation of gene expression in response to an environmental signal.",
+        level: "undergrad",
+        type: "case",
+        topic: "Microbiology",
+      },
+      {
+        id: 21,
+        text: "A patient with normal blood pressure develops hypertension after being prescribed a medication that inhibits the enzyme that converts angiotensin I to angiotensin II. The most likely explanation is:",
+        options: [
+          "The medication is functioning as expected",
+          "The patient has developed tolerance to the medication",
+          "The medication is causing a paradoxical effect",
+          "The patient has a rare genetic variant affecting drug metabolism",
+        ],
+        correctAnswer: 2,
+        explanation:
+          "This is a paradoxical effect. ACE inhibitors, which block the conversion of angiotensin I to angiotensin II, typically lower blood pressure. If hypertension develops, it suggests the drug is having the opposite of its intended effect, possibly due to compensatory mechanisms or an unusual physiological response.",
+        hint: "Consider what the normal effect of inhibiting this enzyme would be and how this case differs.",
+        level: "undergrad",
+        type: "case",
+        topic: "Pharmacology",
+      },
+      {
+        id: 22,
+        text: "An ecologist studying a forest ecosystem observes that after a wildfire, certain plant species quickly colonize the burned area, but are gradually replaced by different species over time. This process is an example of:",
+        options: ["Primary succession", "Secondary succession", "Climax community", "Ecological niche partitioning"],
+        correctAnswer: 1,
+        explanation:
+          "Secondary succession occurs when an ecosystem is disturbed but not completely destroyed (soil remains). After a wildfire, pioneer species colonize first, followed by a predictable sequence of species until a relatively stable climax community is reached.",
+        hint: "This type of ecological succession occurs after a disturbance to an existing ecosystem.",
+        level: "undergrad",
+        type: "case",
+        topic: "Ecology",
+      },
+  ];
 
-  // Handle player count change
-  const handlePlayerCountChange = (e) => {
-    const count = Number.parseInt(e.target.value);
-    setPlayerCount(count);
+  // Filter questions based on level
+  const filterQuestions = (level) => {
+    // Filter questions by level
+    const filteredQuestions = biologyQuestions.filter((q) => q.level === level);
 
-    // Update player names array
-    const newNames = [...playerNames];
-    if (count > playerNames.length) {
-      // Add more players
-      for (let i = playerNames.length; i < count; i++) {
-        newNames.push(`Player ${i + 1}`);
-      }
-    } else {
-      // Remove excess players
-      newNames.splice(count);
-    }
-    setPlayerNames(newNames);
-  };
+    // Ensure a mix of case and knowledge questions
+    const caseQuestions = filteredQuestions.filter((q) => q.type === "case");
+    const knowledgeQuestions = filteredQuestions.filter((q) => q.type === "knowledge");
 
-  // Handle player name change
-  const handlePlayerNameChange = (index, name) => {
-    const newNames = [...playerNames];
-    newNames[index] = name;
-    setPlayerNames(newNames);
-  };
+    // Shuffle both arrays
+    const shuffledCase = [...caseQuestions].sort(() => Math.random() - 0.5);
+    const shuffledKnowledge = [...knowledgeQuestions].sort(() => Math.random() - 0.5);
 
-  // Handle single player mode toggle
-  const handleSinglePlayerModeChange = (e) => {
-    setSinglePlayerMode(e.target.value === "true");
-  };
+    // Take up to 5 of each type, or fewer if not enough questions
+    const selectedCase = shuffledCase.slice(0, Math.min(5, shuffledCase.length));
+    const selectedKnowledge = shuffledKnowledge.slice(0, Math.min(5, shuffledKnowledge.length));
 
-  // Show toast message
-  const showToast = (message) => {
-    setToast({ show: true, message });
-    setTimeout(() => setToast({ show: false, message: "" }), 3000);
+    // Combine and shuffle again
+    return [...selectedCase, ...selectedKnowledge].sort(() => Math.random() - 0.5);
   };
 
   // Start the game
   const startGame = () => {
-    // Create players
-    const gamePlayers = [];
+    const questions = filterQuestions(level);
 
-    if (singlePlayerMode) {
-      // Single player + bot
-      gamePlayers.push({
-        id: 1,
-        name: playerNames[0] || "Player 1",
-        position: 0,
-        color: playerColors[0],
-        isBot: false,
-      });
-
-      // Add bots
-      for (let i = 1; i < playerCount; i++) {
-        gamePlayers.push({
-          id: i + 1,
-          name: `Bot ${i}`,
-          position: 0,
-          color: playerColors[i],
-          isBot: true,
-        });
-      }
-    } else {
-      // Multiple human players
-      for (let i = 0; i < playerCount; i++) {
-        gamePlayers.push({
-          id: i + 1,
-          name: playerNames[i] || `Player ${i + 1}`,
-          position: 0,
-          color: playerColors[i],
-          isBot: false,
-        });
-      }
+    if (questions.length === 0) {
+      alert("No questions available for the selected level. Please try a different level.");
+      return;
     }
 
-    setPlayers(gamePlayers);
-    setPlayerSetup(false);
+    setGameQuestions(questions);
+    setCurrentQuestionIndex(0);
+    setScore(0);
+    setSelectedAnswer(null);
+    setShowExplanation(false);
+    setShowHint(false);
+    setHintsUsed(0);
     setGameStarted(true);
+    setGameOver(false);
 
-    // Generate question boxes
-    generateQuestionBoxes();
+    // Start timer for first question
+    startTimer(level);
   };
 
-  // Generate question boxes (about 40% of the board)
-  const generateQuestionBoxes = () => {
-    const boxes = [];
-    const totalBoxes = 100;
-    const questionCount = 40; // 40% of boxes have questions
+  // Start timer based on level
+  const startTimer = (level) => {
+    let seconds = 0;
 
-    // Create an array of positions (excluding start and finish)
-    const positions = Array.from({ length: totalBoxes - 2 }, (_, i) => i + 1);
-
-    // Shuffle the array
-    for (let i = positions.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [positions[i], positions[j]] = [positions[j], positions[i]];
+    switch (level) {
+      case "middle":
+        seconds = 30;
+        break;
+      case "high":
+        seconds = 45;
+        break;
+      case "undergrad":
+        seconds = 60;
+        break;
+      default:
+        seconds = 30;
     }
 
-    // Take the first questionCount positions
-    const questionPositions = positions.slice(0, questionCount);
+    setTimeLeft(seconds);
 
-    // Create question boxes
-    questionPositions.forEach((position, index) => {
-      boxes.push({
-        position,
-        question: sampleQuestions[index % sampleQuestions.length],
+    // Clear any existing timer
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+
+    // Start new timer
+    timerRef.current = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          // Time's up
+          clearInterval(timerRef.current);
+          if (!showExplanation) {
+            setShowResult(true);
+          }
+          return 0;
+        }
+        return prev - 1;
       });
-    });
-
-    setQuestionBoxes(boxes);
-  };
-
-  const rollDice = () => {
-    if (isRolling || showQuestion || botThinking) return;
-
-    setIsRolling(true);
-
-    // Simulate dice rolling animation
-    const rollInterval = setInterval(() => {
-      setDiceValue(Math.floor(Math.random() * 6) + 1);
-    }, 100);
-
-    // Stop rolling after 1 second
-    setTimeout(() => {
-      clearInterval(rollInterval);
-      const finalValue = Math.floor(Math.random() * 6) + 1;
-      setDiceValue(finalValue);
-      movePlayer(finalValue);
-      setIsRolling(false);
     }, 1000);
   };
 
-  const movePlayer = (steps) => {
-    const currentPlayer = players[currentPlayerIndex];
-    let newPosition = currentPlayer.position + steps;
+  // Handle answer selection
+  const handleAnswerSelection = (index) => {
+    if (selectedAnswer !== null || timeLeft === 0) return;
 
-    // Ensure position doesn't exceed 100
-    if (newPosition > 100) {
-      newPosition = 100;
+    setSelectedAnswer(index);
+
+    const currentQuestion = gameQuestions[currentQuestionIndex];
+    const isCorrect = index === currentQuestion.correctAnswer;
+
+    if (isCorrect) {
+      // Calculate score based on level, time left, and hints used
+      const questionScore = level === "middle" ? 10 : level === "high" ? 15 : 20;
+
+      // Bonus for time left (up to 50% bonus)
+      const timeBonus = Math.floor((timeLeft / getMaxTime(level)) * (questionScore * 0.5));
+
+      // Penalty for using hints (25% reduction per hint)
+      const hintPenalty = showHint ? Math.floor(questionScore * 0.25) : 0;
+
+      // Calculate final score
+      const finalScore = questionScore + timeBonus - hintPenalty;
+
+      setScore(score + finalScore);
+
+      // We would add confetti effect here if imported
+      // For simplified version, we're omitting the confetti
     }
 
-    // Update player position
-    const updatedPlayers = [...players];
-    updatedPlayers[currentPlayerIndex] = {
-      ...currentPlayer,
-      position: newPosition,
+    // Show explanation
+    setShowExplanation(true);
+
+    // Clear timer
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+  };
+
+  // Get maximum time based on level
+  const getMaxTime = (level) => {
+    switch (level) {
+      case "middle":
+        return 30;
+      case "high":
+        return 45;
+      case "undergrad":
+        return 60;
+      default:
+        return 30;
+    }
+  };
+
+  // Move to next question
+  const nextQuestion = () => {
+    setSelectedAnswer(null);
+    setShowExplanation(false);
+    setShowHint(false);
+    setShowResult(false);
+
+    if (currentQuestionIndex < gameQuestions.length - 1) {
+      const nextIndex = currentQuestionIndex + 1;
+      setCurrentQuestionIndex(nextIndex);
+
+      // Start timer for next question
+      startTimer(level);
+    } else {
+      // Game completed
+      setGameOver(true);
+    }
+  };
+
+  // Handle showing hint
+  const handleShowHint = () => {
+    setShowHint(true);
+    setHintsUsed(hintsUsed + 1);
+  };
+
+  // Clean up timer on unmount
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
     };
-    setPlayers(updatedPlayers);
+  }, []);
 
-    // Check if player landed on a question box
-    const questionBox = questionBoxes.find((box) => box.position === newPosition);
-    if (questionBox) {
-      setCurrentQuestion(questionBox.question);
-      setShowQuestion(true);
-
-      // If it's a bot, automatically answer after a delay
-      if (currentPlayer.isBot) {
-        setBotThinking(true);
-
-        // Bot has 60-80% chance to answer correctly (improved bot logic)
-        const botSkillLevel = 0.6 + Math.random() * 0.2;
-        const isCorrect = Math.random() < botSkillLevel;
-
-        // Bot takes 2-4 seconds to "think" before answering
-        const thinkingTime = 2000 + Math.random() * 2000;
-
-        setTimeout(() => {
-          handleBotAnswer(isCorrect, questionBox.question);
-          setBotThinking(false);
-        }, thinkingTime);
-      }
-    } else {
-      // Move to next player if no question
-      nextPlayer();
-    }
-
-    // Check if game is over
-    if (newPosition === 100) {
-      setGameOver(true);
-      setWinner(currentPlayer);
+  // Get level display name
+  const getLevelDisplayName = (level) => {
+    switch (level) {
+      case "middle":
+        return "Middle School (8th-10th grade)";
+      case "high":
+        return "High School (11th-12th grade)";
+      case "undergrad":
+        return "Undergraduate";
+      default:
+        return "Unknown Level";
     }
   };
 
-  const handleBotAnswer = (isCorrect, question) => {
-    const currentPlayer = players[currentPlayerIndex];
-    const updatedPlayers = [...players];
+  // Current question
+  const currentQuestion = gameQuestions[currentQuestionIndex];
 
-    if (isCorrect) {
-      // Correct answer - advance based on difficulty
-      let advanceSteps = 0;
-      switch (question.difficulty) {
-        case "easy":
-          advanceSteps = 3;
-          break;
-        case "medium":
-          advanceSteps = 5;
-          break;
-        case "hard":
-          advanceSteps = 8;
-          break;
-      }
+  // Calculate final score percentage
+  const scorePercentage =
+    gameQuestions.length > 0
+      ? Math.round((score / (gameQuestions.length * (level === "middle" ? 15 : level === "high" ? 22 : 30))) * 100)
+      : 0;
 
-      let newPosition = currentPlayer.position + advanceSteps;
-      if (newPosition > 100) newPosition = 100;
-
-      updatedPlayers[currentPlayerIndex] = {
-        ...currentPlayer,
-        position: newPosition,
-      };
-
-      setResultMessage(`${currentPlayer.name} answered correctly! Advanced ${advanceSteps} spaces.`);
-      setResultEmoji("🎉");
-
-      // Trigger confetti
-      if (confettiCanvasRef.current) {
-        confetti({
-          particleCount: 100,
-          spread: 70,
-          origin: { y: 0.6 },
-        });
-      }
-    } else {
-      // Wrong answer - fall back based on difficulty
-      let fallbackSteps = 0;
-      switch (question.difficulty) {
-        case "easy":
-          fallbackSteps = 2;
-          break;
-        case "medium":
-          fallbackSteps = 4;
-          break;
-        case "hard":
-          fallbackSteps = 6;
-          break;
-      }
-
-      let newPosition = currentPlayer.position - fallbackSteps;
-      if (newPosition < 0) newPosition = 0;
-
-      updatedPlayers[currentPlayerIndex] = {
-        ...currentPlayer,
-        position: newPosition,
-      };
-
-      setResultMessage(`${currentPlayer.name} answered incorrectly! Fell back ${fallbackSteps} spaces.`);
-      setResultEmoji("😢");
-    }
-
-    setPlayers(updatedPlayers);
-    setShowQuestion(false);
-    setShowResult(true);
-
-    // Check if game is over after answering
-    if (updatedPlayers[currentPlayerIndex].position === 100) {
-      setGameOver(true);
-      setWinner(updatedPlayers[currentPlayerIndex]);
-    }
+  // Get feedback based on score percentage
+  const getFeedback = () => {
+    if (scorePercentage >= 90) return "Outstanding! You have exceptional biology knowledge!";
+    if (scorePercentage >= 75) return "Great job! You have a solid understanding of biology concepts.";
+    if (scorePercentage >= 60) return "Good work! You've demonstrated good biology knowledge.";
+    if (scorePercentage >= 40) return "Nice effort! Keep studying to improve your biology knowledge.";
+    return "Keep practicing! Biology takes time to master.";
   };
 
-  const nextPlayer = () => {
-    setCurrentPlayerIndex((currentPlayerIndex + 1) % players.length);
-
-    // If next player is a bot, automatically roll dice after a delay
-    if (players[(currentPlayerIndex + 1) % players.length]?.isBot) {
-      setTimeout(() => {
-        rollDice();
-      }, 1500);
-    }
-  };
-
-  const handleAnswerSelection = (selectedIndex) => {
-    if (!currentQuestion) return;
-
-    const isCorrect = selectedIndex === currentQuestion.correctAnswer;
-    const currentPlayer = players[currentPlayerIndex];
-    const updatedPlayers = [...players];
-
-    if (isCorrect) {
-      // Correct answer - advance based on difficulty
-      let advanceSteps = 0;
-      switch (currentQuestion.difficulty) {
-        case "easy":
-          advanceSteps = 3;
-          break;
-        case "medium":
-          advanceSteps = 5;
-          break;
-        case "hard":
-          advanceSteps = 8;
-          break;
-      }
-
-      let newPosition = currentPlayer.position + advanceSteps;
-      if (newPosition > 100) newPosition = 100;
-
-      updatedPlayers[currentPlayerIndex] = {
-        ...currentPlayer,
-        position: newPosition,
-      };
-
-      setResultMessage(`Correct! You advance ${advanceSteps} spaces.`);
-      setResultEmoji("🎉");
-
-      // Trigger confetti
-      if (confettiCanvasRef.current) {
-        confetti({
-          particleCount: 100,
-          spread: 70,
-          origin: { y: 0.6 },
-        });
-      }
-    } else {
-      // Wrong answer - fall back based on difficulty
-      let fallbackSteps = 0;
-      switch (currentQuestion.difficulty) {
-        case "easy":
-          fallbackSteps = 2;
-          break;
-        case "medium":
-          fallbackSteps = 4;
-          break;
-        case "hard":
-          fallbackSteps = 6;
-          break;
-      }
-
-      let newPosition = currentPlayer.position - fallbackSteps;
-      if (newPosition < 0) newPosition = 0;
-
-      updatedPlayers[currentPlayerIndex] = {
-        ...currentPlayer,
-        position: newPosition,
-      };
-
-      setResultMessage(`Wrong! You fall back ${fallbackSteps} spaces.`);
-      setResultEmoji("😢");
-    }
-
-    setPlayers(updatedPlayers);
-    setShowQuestion(false);
-    setShowResult(true);
-
-    // Check if game is over after answering
-    if (updatedPlayers[currentPlayerIndex].position === 100) {
-      setGameOver(true);
-      setWinner(updatedPlayers[currentPlayerIndex]);
-    }
-  };
-
-  const closeResultDialog = () => {
-    setShowResult(false);
-    setCurrentQuestion(null);
-
-    // Move to next player if game is not over
-    if (!gameOver) {
-      nextPlayer();
-    }
-  };
-
-  const resetGame = () => {
-    setGameStarted(false);
-    setPlayerSetup(true);
-    setPlayers([]);
-    setCurrentPlayerIndex(0);
-    setDiceValue(null);
-    setIsRolling(false);
-    setCurrentQuestion(null);
-    setShowQuestion(false);
-    setGameOver(false);
-    setWinner(null);
-    setShowResult(false);
-    setBotThinking(false);
-  };
-
-  // Render dice based on current value
-  const renderDice = () => {
-    if (diceValue === null) return null;
-
-    const diceIcons = [
-      <Dice1 key={1} className="w-12 h-12" />,
-      <Dice2 key={2} className="w-12 h-12" />,
-      <Dice3 key={3} className="w-12 h-12" />,
-      <Dice4 key={4} className="w-12 h-12" />,
-      <Dice5 key={5} className="w-12 h-12" />,
-      <Dice6 key={6} className="w-12 h-12" />,
-    ];
-
-    return diceIcons[diceValue - 1];
-  };
-
-  // Generate the game board
-  const renderBoard = () => {
-    const board = [];
-    const totalRows = 10;
-    const totalCols = 10;
-
-    for (let row = 0; row < totalRows; row++) {
-      const rowCells = [];
-
-      for (let col = 0; col < totalCols; col++) {
-        // Calculate position based on row and column
-        // Start from bottom-left corner (as requested)
-        let position;
-        if (row % 2 === 0) {
-          // Even rows go left to right
-          position = (totalRows - row) * totalCols - col;
-        } else {
-          // Odd rows go right to left
-          position = (totalRows - row - 1) * totalCols + col + 1;
-        }
-
-        // Check if any player is on this position
-        const playersOnCell = players.filter((player) => player.position === position);
-
-        // Check if this is a question box
-        const isQuestionBox = questionBoxes.some((box) => box.position === position);
-
-        rowCells.push(
-          <div
-            key={`${row}-${col}`}
-            className={cn(
-              "border border-indigo-800/30 flex flex-col items-center justify-center relative",
-              position % 2 === 0 ? "bg-indigo-950/50" : "bg-indigo-900/50",
-              isQuestionBox ? "bg-amber-900/30" : "",
-              position === 100 ? "bg-emerald-900/50" : "",
-              position === 1 ? "bg-indigo-700/50" : ""
-            )}
-            style={{ height: "60px" }}
-          >
-            <span className="text-xs absolute top-1 left-1 text-indigo-400">{position}</span>
-            {isQuestionBox && <span className="text-lg">❓</span>}
-            {position === 100 && <span className="text-lg">🏆</span>}
-            {position === 1 && <span className="text-lg">🚩</span>}
-            <div className="flex gap-1 mt-1">
-              {playersOnCell.map((player) => (
-                <div
-                  key={player.id}
-                  className={cn("w-4 h-4 rounded-full", player.color)}
-                  title={player.name}
-                  style={{ animation: "scale-in 0.3s ease-out" }}
-                />
-              ))}
-            </div>
-          </div>
-        );
-      }
-
-      board.push(
-        <div key={row} className="grid grid-cols-10">
-          {rowCells}
-        </div>
-      );
-    }
-
-    return board;
-  };
-
-  // Render player setup screen
-  const renderPlayerSetup = () => {
-    return (
-      <div className="bg-indigo-900/50 rounded-xl shadow-lg p-8 max-w-md mx-auto border border-indigo-800/50">
-        <h2 className="text-2xl font-bold mb-6 text-center text-indigo-200">Game Setup</h2>
-
-        <div className="space-y-6">
-          <div>
-            <label htmlFor="playerMode" className="text-indigo-300 mb-2 block">
-              Game Mode
-            </label>
-            <select
-              id="playerMode"
-              onChange={handleSinglePlayerModeChange}
-              defaultValue="false"
-              className="bg-indigo-950 border-indigo-700 text-white p-2 rounded w-full"
-            >
-              <option value="false">Multiplayer</option>
-              <option value="true">Single Player with Bots</option>
-            </select>
-          </div>
-
-          <div>
-            <label htmlFor="playerCount" className="text-indigo-300 mb-2 block">
-              Number of Players
-            </label>
-            <select
-              id="playerCount"
-              onChange={handlePlayerCountChange}
-              defaultValue="2"
-              className="bg-indigo-950 border-indigo-700 text-white p-2 rounded w-full"
-            >
-              <option value="2">2 Players</option>
-              <option value="3">3 Players</option>
-              <option value="4">4 Players</option>
-              <option value="5">5 Players</option>
-            </select>
-          </div>
-
-          <div className="space-y-4">
-            <label className="text-indigo-300 block">Player Names</label>
-            {playerNames.map((name, index) => (
-              <div key={index}>
-                <input
-                  value={name}
-                  onChange={(e) => handlePlayerNameChange(index, e.target.value)}
-                  placeholder={`Player ${index + 1} name`}
-                  className="bg-indigo-950 border-indigo-700 text-white p-2 rounded w-full"
-                />
-              </div>
-            ))}
-          </div>
-
-          <button 
-            onClick={startGame} 
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded"
-          >
-            Start Game
-          </button>
-        </div>
-      </div>
-    );
-  };
-
-  // Question Dialog Component
-  const QuestionDialog = ({ open, onClose }) => {
-    if (!open) return null;
-    
-    return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-        <div className="bg-indigo-900 text-white border-indigo-700 p-6 rounded-lg max-w-md w-full">
-          <div className="flex justify-between items-center mb-4">
-            <div>
-              <h2 className="text-xl font-bold text-indigo-200">Question</h2>
-              <p className="text-indigo-400">
-                Subject: {currentQuestion?.subject.toUpperCase()} | Difficulty: {currentQuestion?.difficulty}
-              </p>
-            </div>
-          </div>
-
-          <div className="py-4">
-            <h3 className="text-lg font-medium mb-4 text-indigo-100">{currentQuestion?.text}</h3>
-            <div className="grid gap-3">
-              {currentQuestion?.options.map((option, index) => (
-                <button
-                  key={index}
-                  className="justify-start text-left h-auto py-3 px-4 border border-indigo-700 hover:bg-indigo-800 text-indigo-200 rounded"
-                  onClick={() => handleAnswerSelection(index)}
-                  disabled={players[currentPlayerIndex]?.isBot}
-                >
-                  {option}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  // Result Dialog Component
-  const ResultDialog = ({ open, onClose }) => {
-    if (!open) return null;
-    
-    return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-        <div className="bg-indigo-900 text-white border-indigo-700 p-6 rounded-lg max-w-md w-full">
-          <div className="py-6 text-center">
-            <div className="text-6xl mb-4">{resultEmoji}</div>
-            <h3 className="text-xl font-bold mb-4 text-indigo-200">{resultMessage}</h3>
-            <button 
-              onClick={closeResultDialog} 
-              className="bg-indigo-600 hover:bg-indigo-700 py-2 px-4 rounded text-white"
-            >
-              Continue
-            </button>
-          </div>
-        </div>
-      </div>
-    );
+  // Helper to add conditional classes
+  const classNames = (...classes) => {
+    return classes.filter(Boolean).join(' ');
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-indigo-950 to-slate-900 text-white">
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-indigo-200">Knowledge Ladder</h1>
-          <a href="/">
-            <button className="border border-indigo-700 text-indigo-300 hover:bg-indigo-800 py-1 px-3 rounded text-sm flex items-center">
-              <Home className="w-4 h-4 mr-2" />
-              Back to Home
-            </button>
+    <div className="biology-quest">
+      <div className="container">
+        <div className="header">
+          <h1 className="title">Biology Quest</h1>
+          <a href="/" className="back-button">
+            <Home className="icon" />
+            Back to Home
           </a>
         </div>
 
         {!gameStarted ? (
-          renderPlayerSetup()
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2">
-              <div className="bg-indigo-900/30 rounded-xl shadow-lg p-4 overflow-auto border border-indigo-800/30">
-                {renderBoard()}
+          <div className="start-screen">
+            <h2 className="subtitle">Biology Quest Challenge</h2>
+
+            <div className="start-content">
+              <p className="description">
+                Test your biology knowledge with questions ranging from cell biology to ecology. Choose your academic
+                level to begin.
+              </p>
+
+              <div className="level-select">
+                <label htmlFor="level" className="select-label">
+                  Academic Level
+                </label>
+                <select 
+                  id="level" 
+                  className="select" 
+                  onChange={(e) => setLevel(e.target.value)} 
+                  defaultValue="middle"
+                >
+                  <option value="middle">Middle School (8th-10th grade)</option>
+                  <option value="high">High School (11th-12th grade)</option>
+                  <option value="undergrad">Undergraduate</option>
+                </select>
               </div>
+
+              <div className="instructions">
+                <h3 className="instructions-title">How to Play:</h3>
+                <ul className="instructions-list">
+                  <li>Answer biology questions before time runs out</li>
+                  <li>Questions include both general knowledge and case-based scenarios</li>
+                  <li>Use hints if you're stuck (but your score will be reduced)</li>
+                  <li>Learn from explanations after each question</li>
+                  <li>Higher levels have more challenging questions but higher point values</li>
+                </ul>
+              </div>
+
+              <button onClick={startGame} className="start-button">
+                Start Game
+              </button>
             </div>
-
-            <div className="flex flex-col gap-6">
-              <div className="bg-indigo-900/50 rounded-xl shadow-lg p-6 border border-indigo-800/50">
-                <h2 className="text-xl font-bold mb-4 text-indigo-200">Game Controls</h2>
-
-                <div className="flex items-center justify-between mb-6">
-                  <div>
-                    <h3 className="font-semibold text-indigo-300">Current Turn</h3>
-                    <div className="flex items-center gap-2 mt-1">
-                      <div className={cn("w-4 h-4 rounded-full", players[currentPlayerIndex]?.color)} />
-                      <span>{players[currentPlayerIndex]?.name}</span>
-                      {players[currentPlayerIndex]?.isBot && <span className="text-xs text-indigo-400">(Bot)</span>}
-                    </div>
+          </div>
+        ) : (
+          <div className="game-container">
+            {!gameOver ? (
+              <div className="question-container">
+                <div className="question-header">
+                  <div className="question-indicator">
+                    <Microscope className="icon" />
+                    <span>
+                      Question {currentQuestionIndex + 1} of {gameQuestions.length}
+                    </span>
                   </div>
-
-                  <div className="flex flex-col items-center">
-                    <div className="border-2 border-indigo-700 rounded-lg p-2 mb-2 min-h-[60px] flex items-center justify-center bg-indigo-950">
-                      {botThinking ? <div className="text-sm text-indigo-400">Bot thinking...</div> : renderDice()}
+                  <div className="score-level">
+                    <div className="score">Score: {score}</div>
+                    <div className="level-badge">
+                      {getLevelDisplayName(level)}
                     </div>
-                    <button
-                      onClick={rollDice}
-                      disabled={
-                        isRolling || showQuestion || gameOver || players[currentPlayerIndex]?.isBot || botThinking
-                      }
-                      className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-900/50 py-2 px-4 rounded text-white"
-                    >
-                      {isRolling ? "Rolling..." : "Roll Dice"}
-                    </button>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  {players.map((player) => (
-                    <div key={player.id} className="bg-indigo-950 rounded-lg p-3 border border-indigo-800/50">
-                      <div className="flex items-center gap-2 mb-1">
-                        <div className={cn("w-4 h-4 rounded-full", player.color)} />
-                        <span className="font-medium">{player.name}</span>
-                        {player.isBot && <span className="text-xs text-indigo-400">(Bot)</span>}
+                {!showExplanation && (
+                  <div className="timer-container">
+                    <div className="timer-header">
+                      <div className="timer-label">Time Remaining</div>
+                      <div className={classNames(
+                        "timer-value",
+                        timeLeft > getMaxTime(level) * 0.6
+                          ? "timer-high"
+                          : timeLeft > getMaxTime(level) * 0.3
+                            ? "timer-medium"
+                            : "timer-low"
+                      )}>
+                        {timeLeft} seconds
                       </div>
-                      <div className="text-indigo-300">Position: {player.position}</div>
                     </div>
+                    <div className="progress-bar-container">
+                      <div 
+                        className="progress-bar" 
+                        style={{ width: `${(timeLeft / getMaxTime(level)) * 100}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="question-content">
+                  <div className="question-type-container">
+                    <h2 className="question-type">
+                      {currentQuestion?.type === "case" ? "Case Study" : "Knowledge Question"}
+                    </h2>
+                    <span className="topic-tag">
+                      {currentQuestion?.topic}
+                    </span>
+                  </div>
+
+                  <div className="question-text-container">
+                    <p className="question-text">{currentQuestion?.text}</p>
+
+                    {showHint && currentQuestion?.hint && (
+                      <div className="hint-container">
+                        <div className="hint-content">
+                          <HelpCircle className="icon" />
+                          <p className="hint-text">{currentQuestion.hint}</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="options-container">
+                  {currentQuestion?.options.map((option, index) => (
+                    <button
+                      key={index}
+                      className={classNames(
+                        "option-button",
+                        selectedAnswer === null
+                          ? ""
+                          : selectedAnswer === index && index === currentQuestion.correctAnswer
+                            ? "option-correct"
+                            : selectedAnswer === index
+                              ? "option-incorrect"
+                              : index === currentQuestion.correctAnswer
+                                ? "option-correct-reveal"
+                                : "option-neutral"
+                      )}
+                      onClick={() => handleAnswerSelection(index)}
+                      disabled={selectedAnswer !== null || timeLeft === 0}
+                    >
+                      <div className="option-content">
+                        <div className="option-icon">
+                          {selectedAnswer !== null && (
+                            <>
+                              {index === currentQuestion.correctAnswer ? (
+                                <CheckCircle2 className="icon" />
+                              ) : selectedAnswer === index ? (
+                                <AlertCircle className="icon" />
+                              ) : null}
+                            </>
+                          )}
+                        </div>
+                        <div>{option}</div>
+                      </div>
+                    </button>
                   ))}
                 </div>
 
-                {gameOver && (
-                  <div className="mt-6 text-center">
-                    <h3 className="text-xl font-bold text-emerald-400 mb-2">Game Over!</h3>
-                    <p className="mb-4">{winner?.name} wins!</p>
-                    <button onClick={resetGame} className="bg-indigo-600 hover:bg-indigo-700 py-2 px-4 rounded text-white">
-                      Play Again
-                    </button>
+                {showExplanation && (
+                  <div className="explanation-container">
+                    <h3 className="explanation-title">Explanation:</h3>
+                    <p className="explanation-text">{currentQuestion?.explanation}</p>
                   </div>
                 )}
-              </div>
 
-              <div className="bg-indigo-900/50 rounded-xl shadow-lg p-6 border border-indigo-800/50">
-                <h2 className="text-xl font-bold mb-2 text-indigo-200">How to Play</h2>
-                <ul className="list-disc pl-5 space-y-1 text-sm text-indigo-300">
-                  <li>Roll the dice to move your player</li>
-                  <li>Land on a question box (❓) to answer a question</li>
-                  <li>Correct answers let you advance further</li>
-                  <li>Wrong answers make you fall back</li>
-                  <li>First player to reach position 100 wins!</li>
-                </ul>
+                <div className="actions-container">
+                  {!showExplanation && !showHint && currentQuestion?.hint && (
+                    <button
+                      className="hint-button"
+                      onClick={handleShowHint}
+                      disabled={selectedAnswer !== null || timeLeft === 0}
+                    >
+                      <HelpCircle className="icon" />
+                      Use Hint
+                    </button>
+                  )}
+
+                  {!showExplanation && (!currentQuestion?.hint || showHint) && (
+                    <div></div> // Empty div for spacing when hint button is not shown
+                  )}
+
+                  {showExplanation && (
+                    <button onClick={nextQuestion} className="next-button">
+                      {currentQuestionIndex < gameQuestions.length - 1 ? (
+                        <>
+                          Next Question
+                          <ArrowRight className="icon" />
+                        </>
+                      ) : (
+                        "See Results"
+                      )}
+                    </button>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="results-container">
+                <h2 className="results-title">Quiz Complete!</h2>
+
+                <div className="score-summary">
+                  <div className="percentage">{scorePercentage}%</div>
+                  <p className="final-score">Final Score: {score}</p>
+                  <p className="feedback">{getFeedback()}</p>
+                </div>
+
+                <div className="performance-summary">
+                  <h3 className="summary-title">Performance Summary:</h3>
+                  <div className="summary-stats">
+                    <p>• Level: {getLevelDisplayName(level)}</p>
+                    <p>• Questions Answered: {gameQuestions.length}</p>
+                    <p>• Hints Used: {hintsUsed}</p>
+                  </div>
+                </div>
+
+                <div className="final-actions">
+                  <button onClick={startGame} className="play-again-button">
+                    Play Again
+                  </button>
+                  <a href="/" className="home-button">
+                    Back to Home
+                  </a>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Result Dialog */}
+        {showResult && !showExplanation && (
+          <div className="modal-overlay" onClick={() => setShowResult(false)}>
+            <div className="modal" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-content">
+                <div className="times-up">⏰</div>
+                <h3 className="times-up-title">Time's Up!</h3>
+                <p className="times-up-message">You didn't select an answer in time.</p>
+                <button
+                  onClick={() => {
+                    setShowResult(false);
+                    setShowExplanation(true);
+                  }}
+                  className="show-answer-button"
+                >
+                  Show Answer
+                </button>
               </div>
             </div>
           </div>
         )}
 
-        {/* Question and Result Dialogs */}
-        <QuestionDialog open={showQuestion} onClose={() => setShowQuestion(false)} />
-        <ResultDialog open={showResult} onClose={() => setShowResult(false)} />
-
-        {/* Toast notification */}
-        {toast.show && <Toast message={toast.message} />}
-
         {/* Hidden canvas for confetti */}
-        <canvas ref={confettiCanvasRef} className="fixed pointer-events-none inset-0 z-50 opacity-70" />
+        <canvas ref={confettiCanvasRef} className="confetti-canvas" />
       </div>
-
-      {/* Add CSS for animations */}
-      <style jsx>{`
-        @keyframes scale-in {
-          from { transform: scale(0); }
-          to { transform: scale(1); }
-        }
-      `}</style>
     </div>
   );
-}
+};
 
-export default QuizLadderGame;
+export default BiologyQuestGame;
