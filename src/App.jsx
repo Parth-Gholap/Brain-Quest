@@ -15,6 +15,7 @@ import QuizLadder from './quiz-ladder-page';
 import Riddles from './riddles-page';
 import Sudoku from './sudoku-page';
 import WordScramble from './word-scramble-page';
+import AttackSimulator from './AttackSimulator';
 
 function App() {
   return (
@@ -34,6 +35,9 @@ function App() {
         <Route path="/riddles" element={<Riddles />} />
         <Route path="/sudoku" element={<Sudoku />} />
         <Route path="/word-scramble" element={<WordScramble />} />
+        <Route path="/AttackSimulator" element={<AttackSimulator />} />
+
+        {/* 404 Not Found Route */}
       </Routes>
     </div>
   );
