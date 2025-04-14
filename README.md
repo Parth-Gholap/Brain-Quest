@@ -84,10 +84,10 @@ To run this project locally on your machine:
 🛠 Built with passion during Summer of CodeFest'25 Hackathon 
 #SummerofCodefest #GSoCInnovators
 
-- 🎮 Abhiral Jain  
-- 🧠 Ayush Karan 
-- 🎨 Parth Gholap  
-- 📊 Saket Jha
+- Abhiral Jain  
+- Ayush Karan 
+- Parth Gholap  
+- Saket Jha
 
 ---
 
