@@ -121,9 +121,11 @@ const NeuralNetwork = () => {
         </mesh>
       ))}
 
+
       {/* Connections */}
       {connections.current.map((connection, i) => {
         if (!nodes.current[connection.start] || !nodes.current[connection.end]) return null
+
 
         const start = new THREE.Vector3(...nodes.current[connection.start].position)
         const end = new THREE.Vector3(...nodes.current[connection.end].position)
@@ -572,4 +574,4 @@ const HomePage = () => {
   )
 }
 
-export default HomePage
+export default HomePage;
