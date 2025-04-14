@@ -16,17 +16,20 @@ import Riddles from './riddles-page';
 import Sudoku from './sudoku-page';
 import WordScramble from './word-scramble-page';
 import AttackSimulator from './AttackSimulator';
+import FontsLoader from "./fonts-loader";
+import SplashScreen from "./SplashScreen";
 
 function App() {
   return (
     <div className="app-container">
       <Routes>
         {/* Home Route */}
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<SplashScreen />} />
 
         {/* Game Routes */}
         {/* <Route path="/biology-quest-info" element={<BiologyQuestInfo />} />
         <Route path="/biology-quest" element={<BiologyQuest />} /> */}
+        <Route path='/home' element={<Home/>} />
         <Route path="/math-ninja" element={<MathNinja />} />
         <Route path="/code-breaker" element={<CodeBreaker />} />
         <Route path="/memory-match" element={<MemoryMatch />} />
@@ -36,6 +39,7 @@ function App() {
         <Route path="/sudoku" element={<Sudoku />} />
         <Route path="/word-scramble" element={<WordScramble />} />
         <Route path="/AttackSimulator" element={<AttackSimulator />} />
+        <Route path="/FontsLoader" element={<FontsLoader/>} />
 
         {/* 404 Not Found Route */}
       </Routes>
