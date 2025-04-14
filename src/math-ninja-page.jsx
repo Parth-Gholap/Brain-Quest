@@ -1,8 +1,13 @@
 // MathMastery.jsx
 import React, { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
+import confetti from "canvas-confetti";
 import "./math-ninja-page.css";
 
-function MathMastery() {
+// Import custom components to replace shadcn UI components
+// import HomeIcon from "./icons/HomeIcon"; // Create this simple icon component
+
+function MathNinjaGame() {
   const [gameStarted, setGameStarted] = useState(false);
   const [difficulty, setDifficulty] = useState("easy");
   const [operation, setOperation] = useState("mixed");
@@ -19,6 +24,7 @@ function MathMastery() {
   const [multipleChoiceOptions, setMultipleChoiceOptions] = useState([]);
 
   const timerRef = useRef(null);
+  const confettiCanvasRef = useRef(null);
   const inputRef = useRef(null);
 
   // Generate a math problem
@@ -263,9 +269,7 @@ function MathMastery() {
 
     // Filter by difficulty
     const filteredProblems =
-      difficulty === "mixed" 
-        ? calculusProblems 
-        : calculusProblems.filter((p) => p.difficulty === difficulty);
+      difficulty === "mixed" ? calculusProblems : calculusProblems.filter((p) => p.difficulty === difficulty);
 
     // Select a random problem
     const randomProblem = filteredProblems[Math.floor(Math.random() * filteredProblems.length)];
@@ -413,18 +417,13 @@ function MathMastery() {
     if (isAnswerCorrect) {
       setScore(score + 1);
 
-      // Trigger confetti effect for correct answer
-      try {
-        const confetti = window.confetti;
-        if (confetti) {
-          confetti({
-            particleCount: 100,
-            spread: 70,
-            origin: { y: 0.6 },
-          });
-        }
-      } catch (e) {
-        console.log("Confetti not available");
+      // Trigger confetti for correct answer
+      if (confettiCanvasRef.current) {
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+        });
       }
     }
 
@@ -451,18 +450,13 @@ function MathMastery() {
     if (isAnswerCorrect) {
       setScore(score + 1);
 
-      // Trigger confetti effect for correct answer
-      try {
-        const confetti = window.confetti;
-        if (confetti) {
-          confetti({
-            particleCount: 100,
-            spread: 70,
-            origin: { y: 0.6 },
-          });
-        }
-      } catch (e) {
-        console.log("Confetti not available");
+      // Trigger confetti for correct answer
+      if (confettiCanvasRef.current) {
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+        });
       }
     }
 
@@ -495,7 +489,7 @@ function MathMastery() {
       // Focus on input if not multiple choice
       if (!showMultipleChoice && inputRef.current) {
         setTimeout(() => {
-          inputRef.current.focus();
+          inputRef.current?.focus();
         }, 100);
       }
     } else {
@@ -539,7 +533,7 @@ function MathMastery() {
         // Focus on input if not multiple choice
         if (!useMultipleChoice && inputRef.current) {
           setTimeout(() => {
-            inputRef.current.focus();
+            inputRef.current?.focus();
           }, 100);
         }
       } else {
@@ -561,53 +555,73 @@ function MathMastery() {
   // Current problem
   const currentProblem = problems[currentProblemIndex];
 
-  // Function to get time class based on time remaining
-  const getTimeClass = () => {
-    if (timeLeft > 15) return "time-high";
-    if (timeLeft > 7) return "time-medium";
-    return "time-low";
+  // Calculate timer progress percentage
+  const getTimerProgressWidth = () => {
+    const maxTime = 
+      currentProblem?.difficulty === "easy"
+        ? 20
+        : currentProblem?.difficulty === "medium"
+          ? 30
+          : 45;
+    
+    return (timeLeft / maxTime) * 100 + "%";
   };
 
-  // Function to get difficulty class
-  const getDifficultyClass = (difficulty) => {
-    switch (difficulty) {
-      case "easy":
-        return "difficulty-easy";
-      case "medium":
-        return "difficulty-medium";
-      case "hard":
-        return "difficulty-hard";
-      default:
-        return "";
+  // Get timer class based on time remaining
+  const getTimerClass = () => {
+    if (timeLeft > 15) return "timer-value high";
+    if (timeLeft > 7) return "timer-value medium";
+    return "timer-value low";
+  };
+
+  // Get difficulty badge class
+  const getDifficultyClass = () => {
+    if (!currentProblem) return "";
+    
+    switch (currentProblem.difficulty) {
+      case "easy": return "difficulty-badge difficulty-easy";
+      case "medium": return "difficulty-badge difficulty-medium";
+      case "hard": return "difficulty-badge difficulty-hard";
+      default: return "difficulty-badge difficulty-easy";
     }
   };
 
+  // Custom dialog component
+  const ResultDialog = ({ open, onClose, children }) => {
+    if (!open) return null;
+    
+    return (
+      <div className="dialog-overlay" onClick={onClose}>
+        <div className="dialog-content" onClick={(e) => e.stopPropagation()}>
+          {children}
+        </div>
+      </div>
+    );
+  };
+
   return (
-    <div className="mathmastery-container">
-      <div className="mathmastery-wrapper">
+    <div className="body">
+      <div className="container">
         <div className="header">
-          <h1 className="title">Math Mastery</h1>
-          <button className="home-button" onClick={() => window.location.href = "/"}>
-            Back to Home
-          </button>
+          <h1>Math Mastery</h1>
+          <Link to="/" className="back-button">
+            <HomeIcon /> Back to Home
+          </Link>
         </div>
 
         {!gameStarted ? (
-          <div className="start-screen">
-            <h2 className="subtitle">Math Mastery Challenge</h2>
+          <div className="game-setup">
+            <h2>Math Mastery Challenge</h2>
 
-            <div className="start-content">
-              <p className="description">
+            <div className="setup-content">
+              <p>
                 Test your math skills by solving problems quickly. Advance through levels by maintaining a high score!
               </p>
 
-              <div className="select-group">
-                <label htmlFor="difficulty" className="select-label">
-                  Starting Difficulty
-                </label>
-                <select 
-                  id="difficulty" 
-                  className="select-input"
+              <div className="form-group">
+                <label htmlFor="difficulty">Starting Difficulty</label>
+                <select
+                  id="difficulty"
                   value={difficulty}
                   onChange={(e) => setDifficulty(e.target.value)}
                 >
@@ -618,13 +632,10 @@ function MathMastery() {
                 </select>
               </div>
 
-              <div className="select-group">
-                <label htmlFor="operation" className="select-label">
-                  Operation Type
-                </label>
-                <select 
-                  id="operation" 
-                  className="select-input"
+              <div className="form-group">
+                <label htmlFor="operation">Operation Type</label>
+                <select
+                  id="operation"
                   value={operation}
                   onChange={(e) => setOperation(e.target.value)}
                 >
@@ -638,8 +649,8 @@ function MathMastery() {
               </div>
 
               <div className="how-to-play">
-                <h3 className="how-to-play-title">How to Play:</h3>
-                <ul className="how-to-play-list">
+                <h3>How to Play:</h3>
+                <ul>
                   <li>Solve math problems before time runs out</li>
                   <li>Each problem has a time limit based on difficulty</li>
                   <li>Score at least 70% to advance to the next level</li>
@@ -648,21 +659,21 @@ function MathMastery() {
                 </ul>
               </div>
 
-              <button onClick={startGame} className="start-button">
+              <button className="primary-button" onClick={startGame}>
                 Start Game
               </button>
             </div>
           </div>
         ) : (
-          <div className="game-screen">
+          <div className="game-area">
             {!gameOver ? (
-              <div className="problem-container">
+              <div className="game-content">
                 <div className="game-header">
                   <div className="problem-counter">
                     Problem {currentProblemIndex + 1} of {problems.length}
                   </div>
-                  <div className="status-bar">
-                    <div className="score-display">
+                  <div className="score-container">
+                    <div className="score">
                       Score: {score}/{problems.length}
                     </div>
                     <div className="level-badge">
@@ -674,53 +685,51 @@ function MathMastery() {
                 <div className="timer-container">
                   <div className="timer-header">
                     <div className="timer-label">Time Remaining</div>
-                    <div className={`timer-value ${getTimeClass()}`}>
+                    <div className={getTimerClass()}>
                       {timeLeft} seconds
                     </div>
                   </div>
-                  <div className="timer-bar-container">
+                  <div className="progress-bar">
                     <div 
-                      className="timer-bar"
-                      style={{
-                        width: `${(timeLeft / (currentProblem?.difficulty === "easy" ? 20 : currentProblem?.difficulty === "medium" ? 30 : 45)) * 100}%`
-                      }}
+                      className="progress-fill"
+                      style={{ width: getTimerProgressWidth() }}
                     ></div>
                   </div>
                 </div>
 
-                <div className="problem-display">
+                <div className="problem-section">
                   <div className="problem-header">
                     <h2 className="problem-title">Problem</h2>
                     {currentProblem && (
-                      <div className={`difficulty-badge ${getDifficultyClass(currentProblem.difficulty)}`}>
+                      <div className={getDifficultyClass()}>
                         {currentProblem.difficulty}
                       </div>
                     )}
                   </div>
 
-                  <div className="problem-text">
+                  <div className="problem-display">
                     {currentProblem?.latex ? (
-                      <div className="latex-container">
-                        <div className="math-question">{currentProblem.question}</div>
-                        <div className="math-latex">{currentProblem.latex}</div>
+                      <div className="problem-card">
+                        <div className="latex-problem">{currentProblem.question}</div>
+                        <div className="latex">{currentProblem.latex}</div>
                       </div>
                     ) : (
-                      <p className="math-equation">
+                      <p className="problem-card problem-text">
                         {currentProblem?.question}
                       </p>
                     )}
                   </div>
                 </div>
 
-                <div className="input-area">
+                <div className="answer-section">
                   {showMultipleChoice ? (
-                    <div className="multiple-choice">
+                    <div>
                       <label className="answer-label">Select the correct answer:</label>
-                      <div className="options-grid">
+                      <div className="multiple-choice-grid">
                         {multipleChoiceOptions.map((option, index) => (
                           <button
                             key={index}
-                            className="option-button"
+                            className="choice-button"
                             onClick={() => handleMultipleChoiceSelection(option)}
                           >
                             {option}
@@ -729,7 +738,7 @@ function MathMastery() {
                       </div>
                     </div>
                   ) : (
-                    <div className="text-input-container">
+                    <div>
                       <label htmlFor="answer" className="answer-label">
                         Your Answer
                       </label>
@@ -739,7 +748,6 @@ function MathMastery() {
                         value={userAnswer}
                         onChange={(e) => setUserAnswer(e.target.value)}
                         placeholder="Type your answer here..."
-                        className="answer-input"
                         type="number"
                         step="any"
                         onKeyDown={(e) => {
@@ -762,59 +770,80 @@ function MathMastery() {
               </div>
             ) : (
               <div className="game-over">
-                <h2 className="game-over-title">Game Over!</h2>
+                <h2>Game Over!</h2>
 
-                <div className="level-display">{level}</div>
-                <p className="level-text">Levels Completed</p>
+                <div className="level-score">{level}</div>
+                <p className="level-label">Levels Completed</p>
 
-                <p className="final-score">
+                <p className="result-text">
                   You reached level {level} with a final score of {score}/{problems.length}.
                 </p>
 
-                <div className="game-over-buttons">
-                  <button onClick={startGame} className="play-again-button">
+                <div className="button-group">
+                  <button onClick={startGame} className="primary-button">
                     Play Again
                   </button>
-                  <button onClick={() => window.location.href = "/"} className="home-button-alt">
-                    Back to Home
-                  </button>
+                  <Link to="/">
+                    <button className="outline-button">
+                      Back to Home
+                    </button>
+                  </Link>
                 </div>
               </div>
             )}
           </div>
         )}
 
-        {/* Result Modal */}
-        {showResult && (
-          <div className="modal-overlay">
-            <div className="modal-content">
-              <div className="result-container">
-                {isCorrect ? (
-                  <>
-                    <div className="result-emoji">🎉</div>
-                    <h3 className="result-title correct">Correct!</h3>
-                    <p className="result-message">Great job! You solved the problem.</p>
-                  </>
-                ) : (
-                  <>
-                    <div className="result-emoji">😢</div>
-                    <h3 className="result-title incorrect">
-                      {timeLeft === 0 ? "Time's Up!" : "Incorrect!"}
-                    </h3>
-                    <p className="result-message">The correct answer was:</p>
-                    <p className="correct-answer">{currentProblem?.answer}</p>
-                  </>
-                )}
-                <button onClick={nextProblem} className="next-button">
-                  {currentProblemIndex < problems.length - 1 ? "Next Problem" : "Continue"}
-                </button>
-              </div>
-            </div>
+        {/* Result Dialog */}
+        <ResultDialog open={showResult} onClose={() => nextProblem()}>
+          <div className="result-container">
+            {isCorrect ? (
+              <>
+                <div className="result-emoji">🎉</div>
+                <h3 className="result-title correct">Correct!</h3>
+                <p className="result-message">Great job! You solved the problem.</p>
+              </>
+            ) : (
+              <>
+                <div className="result-emoji">😢</div>
+                <h3 className="result-title incorrect">
+                  {timeLeft === 0 ? "Time's Up!" : "Incorrect!"}
+                </h3>
+                <p className="result-message">The correct answer was:</p>
+                <p className="correct-answer">{currentProblem?.answer}</p>
+              </>
+            )}
+            <button onClick={nextProblem} className="primary-button">
+              {currentProblemIndex < problems.length - 1 ? "Next Problem" : "Continue"}
+            </button>
           </div>
-        )}
+        </ResultDialog>
+
+        {/* Hidden canvas for confetti */}
+        <canvas ref={confettiCanvasRef} className="confetti-canvas" />
       </div>
     </div>
   );
 }
 
-export default MathMastery;
+export default MathNinjaGame;
+
+// Simple HomeIcon component
+function HomeIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+      <polyline points="9 22 9 12 15 12 15 22"></polyline>
+    </svg>
+  );
+}
