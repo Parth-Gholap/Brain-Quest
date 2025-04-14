@@ -8,6 +8,8 @@ Brain Quest is a web-based platform that turns education, health, and social awa
 👨‍💻 Team: The Code Architects — Abhiral Jain, Ayush Karan, Parth Gholap, Saket Jha  
 🌐 Live Demo: https://brain-quest-jet.vercel.app/  
 
+Link to ppt about our project (BrainQuest): https://drive.google.com/drive/folders/1N2JYf7tlhw6w1Nu6gDb0bcvvrzrBRx92?usp=sharing
+
 
 ---
 
