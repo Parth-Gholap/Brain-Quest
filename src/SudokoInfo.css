@@ -1,0 +1,206 @@
+/* SudokuInfo.css */
+
+.sudoku-container {
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #1e1b4b, #0f172a);
+    color: white;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 16px;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+  
+  .title {
+    font-size: 30px;
+    font-weight: bold;
+    color: #c7d2fe;
+  }
+  
+  .back-button {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    font-size: 14px;
+    background: transparent;
+    border: 1px solid #4338ca;
+    border-radius: 4px;
+    color: #a5b4fc;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .back-button:hover {
+    background-color: #4338ca;
+  }
+  
+  .icon-wrapper {
+    display: inline-flex;
+    margin-right: 8px;
+  }
+  
+  .icon {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .content-card {
+    max-width: 768px;
+    margin: 0 auto;
+    background-color: rgba(49, 46, 129, 0.5);
+    border-radius: 12px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    padding: 32px;
+    border: 1px solid rgba(49, 46, 129, 0.5);
+  }
+  
+  .icon-header {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 32px;
+  }
+  
+  .large-icon {
+    width: 80px;
+    height: 80px;
+    color: #60a5fa;
+  }
+  
+  .card-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 24px;
+    text-align: center;
+    color: #c7d2fe;
+  }
+  
+  .content-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+  
+  .section-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #c7d2fe;
+    display: flex;
+    align-items: center;
+  }
+  
+  .section-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    color: #60a5fa;
+  }
+  
+  .section-text {
+    color: #a5b4fc;
+    line-height: 1.6;
+  }
+  
+  .subsections {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .info-box {
+    background-color: #1e1b4b;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid rgba(49, 46, 129, 0.5);
+  }
+  
+  .info-box-title {
+    font-weight: bold;
+    color: #60a5fa;
+    margin-bottom: 8px;
+  }
+  
+  .info-list {
+    list-style-type: disc;
+    padding-left: 24px;
+    font-size: 14px;
+    color: #a5b4fc;
+  }
+  
+  .info-list li {
+    margin-bottom: 4px;
+  }
+  
+  .difficulty-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  @media (min-width: 768px) {
+    .difficulty-grid {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+  }
+  
+  .difficulty-item {
+    background-color: #1e293b;
+    padding: 12px;
+    border-radius: 8px;
+  }
+  
+  .difficulty-title {
+    font-weight: 600;
+    color: #60a5fa;
+    margin-bottom: 4px;
+  }
+  
+  .difficulty-text {
+    color: #a5b4fc;
+    font-size: 14px;
+  }
+  
+  .benefits-list {
+    list-style-type: disc;
+    padding-left: 24px;
+    color: #a5b4fc;
+    line-height: 1.6;
+  }
+  
+  .benefits-list li {
+    margin-bottom: 8px;
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 32px;
+  }
+  
+  .play-button {
+    display: inline-block;
+    padding: 12px 32px;
+    background-color: #4f46e5;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .play-button:hover {
+    background-color: #4338ca;
+  }
+  

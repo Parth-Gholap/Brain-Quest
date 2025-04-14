@@ -310,7 +310,7 @@
 .flash-content h1 {
   font-size: 5rem;
   font-weight: 800;
-  background: linear-gradient(to right, #9c88ff, #8c7ae6);
+  background: linear-gradient(to right, #c8c8e01e, #8c7ae662);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;

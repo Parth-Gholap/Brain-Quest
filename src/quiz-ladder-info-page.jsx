@@ -1,19 +1,14 @@
+
 // QuizLadderInfo.jsx
 import React from "react";
-import { Link } from "react-router-dom"; // Using react-router instead of next/link
 import "./quiz-ladder-info-page.css"
-function QuizLadderInfo() {
+
+export default function QuizLadderInfo() {
   return (
     <div className="container">
-      <div className="card">
+      <div className="info-card">
         <h1 className="title">Quiz Ladder Game</h1>
-        
-        <img
-          src="/placeholder.svg?height=300&width=600"
-          alt="Quiz Ladder Game Preview"
-          className="preview-image"
-        />
-        
+       
         <div className="content">
           <section>
             <h2 className="section-title">Game Overview</h2>
@@ -23,7 +18,6 @@ function QuizLadderInfo() {
               helps you climb up, while wrong answers make you slide down!
             </p>
           </section>
-          
           <section>
             <h2 className="section-title">How to Play</h2>
             <ul className="list">
@@ -35,7 +29,6 @@ function QuizLadderInfo() {
               <li>The first player to reach position 100 wins the game!</li>
             </ul>
           </section>
-          
           <section>
             <h2 className="section-title">Educational Benefits</h2>
             <ul className="list">
@@ -46,24 +39,20 @@ function QuizLadderInfo() {
               <li>Questions vary in difficulty to challenge different skill levels</li>
             </ul>
           </section>
-          
-          <div className="button-container">
-            <Link to="/games/quiz-ladder">
+          <div className="cta-container">
+            <a href="/games/quiz-ladder">
               <button className="play-button">
                 Play Now
               </button>
-            </Link>
+            </a>
           </div>
-          
-          <div className="back-link">
-            <Link to="/" className="home-link">
+          <div className="home-link">
+            <a href="/" className="back-link">
               Back to Home
-            </Link>
+            </a>
           </div>
         </div>
       </div>
     </div>
   );
 }
-
-export default QuizLadderInfo;
