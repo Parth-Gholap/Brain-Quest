@@ -1,14 +1,13 @@
-// KnowledgeLadder.jsx
 import React, { useState, useRef, useEffect } from "react";
-import "./quiz-ladder-page.css";
 import confetti from "canvas-confetti";
+import "./quiz-ladder-page.css";
 
 // Define types
 const playerColors = ["player-indigo", "player-rose", "player-emerald", "player-amber", "player-purple"];
 
-// Sample questions
+// Sample questions (you'll add more manually later)
 const sampleQuestions = [
-  // Computer Science Questions
+  // Computer Science Questions (Ids 1-5)
   {
     id: 1,
     text: "What does CPU stand for?",
@@ -60,7 +59,7 @@ const sampleQuestions = [
     subject: "cs",
   },
 
-  // Math Questions
+  // Math Questions (Ids 6-10, plus new ids 11-12)
   {
     id: 6,
     text: "What is the value of π (pi) to two decimal places?",
@@ -101,7 +100,30 @@ const sampleQuestions = [
     difficulty: "hard",
     subject: "math",
   },
-  // General Knowledge Questions
+  // New Math Questions to fill gap (Ids 11-12)
+  {
+    id: 11,
+    text: "What is the formula for the area of a circle?",
+    options: ["πr²", "2πr", "πd", "r²"],
+    correctAnswer: 0,
+    difficulty: "easy",
+    subject: "math",
+  },
+  {
+    id: 12,
+    text: "What is the quadratic formula?",
+    options: [
+      "(-b ± √(b² - 4ac))/(2a)",
+      "(-b ± √(4ac))/a",
+      "(-b ± √(b² + 4ac))/(2a)",
+      "(b ± √(b² - 4ac))/(2a)"
+    ],
+    correctAnswer: 0,
+    difficulty: "hard",
+    subject: "math",
+  },
+
+  // General Knowledge Questions (Ids 13-14, plus new ids 15-17)
   {
     id: 13,
     text: "Which planet is known as the Red Planet?",
@@ -118,7 +140,33 @@ const sampleQuestions = [
     difficulty: "easy",
     subject: "gk",
   },
-  // Biology Questions
+  // New General Knowledge Questions (Ids 15-17)
+  {
+    id: 15,
+    text: "What is the largest ocean on Earth?",
+    options: ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean", "Pacific Ocean"],
+    correctAnswer: 3,
+    difficulty: "easy",
+    subject: "gk",
+  },
+  {
+    id: 16,
+    text: "Who wrote 'Romeo and Juliet'?",
+    options: ["Charles Dickens", "William Shakespeare", "Leo Tolstoy", "Mark Twain"],
+    correctAnswer: 1,
+    difficulty: "easy",
+    subject: "gk",
+  },
+  {
+    id: 17,
+    text: "Which country hosted the 2016 Summer Olympics?",
+    options: ["China", "Brazil", "United Kingdom", "Russia"],
+    correctAnswer: 1,
+    difficulty: "medium",
+    subject: "gk",
+  },
+
+  // Biology Questions (Id 18 + new ids 19-23)
   {
     id: 18,
     text: "What is the largest organ in the human body?",
@@ -127,21 +175,232 @@ const sampleQuestions = [
     difficulty: "easy",
     subject: "bio",
   },
-  // History Questions
+  // New Biology Questions (Ids 19-23)
+  {
+    id: 19,
+    text: "What is the basic unit of life?",
+    options: ["Cell", "Molecule", "Atom", "Organ"],
+    correctAnswer: 0,
+    difficulty: "easy",
+    subject: "bio",
+  },
+  {
+    id: 20,
+    text: "What process do plants use to convert sunlight into energy?",
+    options: ["Photosynthesis", "Respiration", "Transpiration", "Germination"],
+    correctAnswer: 0,
+    difficulty: "easy",
+    subject: "bio",
+  },
+  {
+    id: 21,
+    text: "Which vitamin is produced when a person is exposed to sunlight?",
+    options: ["Vitamin A", "Vitamin B", "Vitamin C", "Vitamin D"],
+    correctAnswer: 3,
+    difficulty: "medium",
+    subject: "bio",
+  },
+  {
+    id: 22,
+    text: "How many chambers are there in the human heart?",
+    options: ["2", "3", "4", "5"],
+    correctAnswer: 2,
+    difficulty: "medium",
+    subject: "bio",
+  },
+  {
+    id: 23,
+    text: "What is the study of insects called?",
+    options: ["Ornithology", "Entomology", "Herpetology", "Ichthyology"],
+    correctAnswer: 1,
+    difficulty: "easy",
+    subject: "bio",
+  },
+
+  // History Questions (Id 24 + new ids 25-27)
   {
     id: 24,
     text: "Who was the first President of the United States?",
-    options: ["Thomas Jefferson", "George Washington", "Abraham Lincoln", "John Adams"],
+    options: [
+      "Thomas Jefferson",
+      "George Washington",
+      "Abraham Lincoln",
+      "John Adams"
+    ],
     correctAnswer: 1,
     difficulty: "easy",
     subject: "history",
   },
-  // Science Questions
+  // New History Questions (Ids 25-27)
+  {
+    id: 25,
+    text: "In which year did the Berlin Wall fall?",
+    options: ["1987", "1989", "1991", "1993"],
+    correctAnswer: 1,
+    difficulty: "medium",
+    subject: "history",
+  },
+  {
+    id: 26,
+    text: "Who was known as the 'Maid of Orléans'?",
+    options: [
+      "Catherine de' Medici",
+      "Joan of Arc",
+      "Marie Curie",
+      "Queen Victoria"
+    ],
+    correctAnswer: 1,
+    difficulty: "medium",
+    subject: "history",
+  },
+  {
+    id: 27,
+    text: "What empire was ruled by Genghis Khan?",
+    options: [
+      "Roman Empire",
+      "Ottoman Empire",
+      "Mongol Empire",
+      "Persian Empire"
+    ],
+    correctAnswer: 2,
+    difficulty: "easy",
+    subject: "history",
+  },
+
+  // Science Questions (Id 28)
   {
     id: 28,
     text: "What is the chemical symbol for gold?",
     options: ["Go", "Gd", "Au", "Ag"],
     correctAnswer: 2,
+    difficulty: "medium",
+    subject: "science",
+  },
+
+  // Additional questions from previous expansion
+  
+  // Additional Computer Science Questions (Ids 29-30)
+  {
+    id: 29,
+    text: "What does GPU stand for?",
+    options: [
+      "Graphical Processing Unit",
+      "General Processing Unit",
+      "Graph Processor Unit",
+      "Graphics Performance Unit",
+    ],
+    correctAnswer: 0,
+    difficulty: "easy",
+    subject: "cs",
+  },
+  {
+    id: 30,
+    text: "Which sorting algorithm is known for its worst-case O(n²) complexity?",
+    options: ["Merge Sort", "Bubble Sort", "Quick Sort", "Heap Sort"],
+    correctAnswer: 1,
+    difficulty: "medium",
+    subject: "cs",
+  },
+
+  // Additional Math Questions (Ids 31-33)
+  {
+    id: 31,
+    text: "What is the sum of the angles in a triangle?",
+    options: ["90°", "180°", "270°", "360°"],
+    correctAnswer: 1,
+    difficulty: "easy",
+    subject: "math",
+  },
+  {
+    id: 32,
+    text: "What is the value of the square root of 144?",
+    options: ["10", "11", "12", "13"],
+    correctAnswer: 2,
+    difficulty: "easy",
+    subject: "math",
+  },
+  {
+    id: 33,
+    text: "Solve for x: 2x - 4 = 10",
+    options: ["7", "8", "9", "10"],
+    correctAnswer: 0,
+    difficulty: "medium",
+    subject: "math",
+  },
+
+  // Additional General Knowledge Questions (Ids 34-35)
+  {
+    id: 34,
+    text: "What is the tallest mountain in the world?",
+    options: ["K2", "Mount Everest", "Kangchenjunga", "Lhotse"],
+    correctAnswer: 1,
+    difficulty: "easy",
+    subject: "gk",
+  },
+  {
+    id: 35,
+    text: "Which country is known as the Land of the Rising Sun?",
+    options: ["China", "Japan", "Thailand", "South Korea"],
+    correctAnswer: 1,
+    difficulty: "easy",
+    subject: "gk",
+  },
+
+  // Additional Biology Questions (Ids 36-37)
+  {
+    id: 36,
+    text: "What is the powerhouse of the cell?",
+    options: [
+      "Nucleus",
+      "Mitochondria",
+      "Ribosome",
+      "Endoplasmic reticulum"
+    ],
+    correctAnswer: 1,
+    difficulty: "easy",
+    subject: "bio",
+  },
+  {
+    id: 37,
+    text: "What is the process by which plants make their food?",
+    options: ["Respiration", "Digestion", "Photosynthesis", "Transpiration"],
+    correctAnswer: 2,
+    difficulty: "easy",
+    subject: "bio",
+  },
+
+  // Additional History Questions (Ids 38-39)
+  {
+    id: 38,
+    text: "In which year did World War II end?",
+    options: ["1939", "1941", "1945", "1950"],
+    correctAnswer: 2,
+    difficulty: "medium",
+    subject: "history",
+  },
+  {
+    id: 39,
+    text: "Who was the first emperor of Rome?",
+    options: ["Julius Caesar", "Augustus", "Nero", "Caligula"],
+    correctAnswer: 1,
+    difficulty: "medium",
+    subject: "history",
+  },
+
+  // Additional Science Questions (Ids 40-41)
+  {
+    id: 40,
+    text: "What planet is known for its spectacular rings?",
+    options: ["Mars", "Saturn", "Uranus", "Neptune"],
+    correctAnswer: 1,
+    difficulty: "easy",
+    subject: "science",
+  },
+  {
+    id: 41,
+    text: "What is the most abundant gas in the Earth's atmosphere?",
+    options: ["Oxygen", "Nitrogen", "Carbon Dioxide", "Hydrogen"],
+    correctAnswer: 1,
     difficulty: "medium",
     subject: "science",
   }
@@ -219,18 +478,6 @@ const Select = ({ onValueChange, defaultValue, children }) => {
   );
 };
 
-const SelectTrigger = ({ children, className }) => {
-  return <div className={`select-trigger ${className || ""}`}>{children}</div>;
-};
-
-const SelectValue = ({ placeholder }) => {
-  return <span className="select-value">{placeholder}</span>;
-};
-
-const SelectContent = ({ children, className }) => {
-  return <div className={`select-content ${className || ""}`}>{children}</div>;
-};
-
 const SelectItem = ({ value, children }) => {
   return <option value={value}>{children}</option>;
 };
@@ -254,6 +501,7 @@ function KnowledgeLadderGame() {
   const [resultEmoji, setResultEmoji] = useState("");
   const [singlePlayerMode, setSinglePlayerMode] = useState(false);
   const [botThinking, setBotThinking] = useState(false);
+  const [usedQuestionIds, setUsedQuestionIds] = useState(new Set());
 
   const confettiCanvasRef = useRef(null);
 
@@ -288,7 +536,49 @@ function KnowledgeLadderGame() {
     setSinglePlayerMode(value === "true");
   };
 
-  // Start the game
+  // New function to get questions based on difficulty progression
+  const getQuestionsByDifficulty = (position) => {
+    // Define difficulty thresholds based on board position
+    let difficulty;
+    if (position < 30) {
+      difficulty = "easy";
+    } else if (position < 70) {
+      difficulty = "medium";
+    } else {
+      difficulty = "hard";
+    }
+    
+    // Filter questions by difficulty that haven't been used yet
+    const eligibleQuestions = sampleQuestions.filter(q => 
+      q.difficulty === difficulty && !usedQuestionIds.has(q.id)
+    );
+    
+    // If we've used all questions of this difficulty, reset the used questions for this difficulty
+    if (eligibleQuestions.length === 0) {
+      const resetQuestions = sampleQuestions.filter(q => q.difficulty === difficulty);
+      return resetQuestions;
+    }
+    
+    return eligibleQuestions;
+  };
+
+  // Get a random question based on player position
+  const getRandomQuestion = (position) => {
+    const questions = getQuestionsByDifficulty(position);
+    const randomIndex = Math.floor(Math.random() * questions.length);
+    const question = questions[randomIndex];
+    
+    // Add to used questions
+    setUsedQuestionIds(prevUsed => {
+      const newUsed = new Set(prevUsed);
+      newUsed.add(question.id);
+      return newUsed;
+    });
+    
+    return question;
+  };
+
+  // Start the game - initialize players and board
   const startGame = () => {
     // Create players
     const gamePlayers = [];
@@ -329,7 +619,8 @@ function KnowledgeLadderGame() {
     setPlayers(gamePlayers);
     setPlayerSetup(false);
     setGameStarted(true);
-
+    setUsedQuestionIds(new Set()); // Reset used questions
+    
     // Generate question boxes
     generateQuestionBoxes();
   };
@@ -338,12 +629,12 @@ function KnowledgeLadderGame() {
   const generateQuestionBoxes = () => {
     const boxes = [];
     const totalBoxes = 100;
-    const questionCount = 40; // 40% of boxes have questions
+    const questionCount = Math.floor(totalBoxes * 0.4); // 40% of boxes have questions
 
     // Create an array of positions (excluding start and finish)
     const positions = Array.from({ length: totalBoxes - 2 }, (_, i) => i + 1);
 
-    // Shuffle the array
+    // Shuffle the array using Fisher-Yates algorithm
     for (let i = positions.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [positions[i], positions[j]] = [positions[j], positions[i]];
@@ -352,11 +643,11 @@ function KnowledgeLadderGame() {
     // Take the first questionCount positions
     const questionPositions = positions.slice(0, questionCount);
 
-    // Create question boxes
-    questionPositions.forEach((position, index) => {
+    // Create question boxes (don't assign specific questions yet)
+    questionPositions.forEach((position) => {
       boxes.push({
         position,
-        question: sampleQuestions[index % sampleQuestions.length],
+        // The question will be selected dynamically when a player lands on the box
       });
     });
 
@@ -368,19 +659,26 @@ function KnowledgeLadderGame() {
 
     setIsRolling(true);
 
-    // Simulate dice rolling animation
-    const rollInterval = setInterval(() => {
+    // Optimize the animation using requestAnimationFrame
+    let rollCount = 0;
+    const maxRolls = 10;
+    const rollInterval = 100;
+    
+    const rollAnimation = (timestamp) => {
       setDiceValue(Math.floor(Math.random() * 6) + 1);
-    }, 100);
-
-    // Stop rolling after 1 second
-    setTimeout(() => {
-      clearInterval(rollInterval);
-      const finalValue = Math.floor(Math.random() * 6) + 1;
-      setDiceValue(finalValue);
-      movePlayer(finalValue);
-      setIsRolling(false);
-    }, 1000);
+      rollCount++;
+      
+      if (rollCount < maxRolls) {
+        setTimeout(() => requestAnimationFrame(rollAnimation), rollInterval);
+      } else {
+        const finalValue = Math.floor(Math.random() * 6) + 1;
+        setDiceValue(finalValue);
+        movePlayer(finalValue);
+        setIsRolling(false);
+      }
+    };
+    
+    requestAnimationFrame(rollAnimation);
   };
 
   const movePlayer = (steps) => {
@@ -392,25 +690,26 @@ function KnowledgeLadderGame() {
       newPosition = 100;
     }
 
-    // Update player position
-    const updatedPlayers = [...players];
-    updatedPlayers[currentPlayerIndex] = {
-      ...currentPlayer,
-      position: newPosition,
-    };
+    // Update player position using immutable state update
+    const updatedPlayers = players.map((player, idx) => 
+      idx === currentPlayerIndex ? { ...player, position: newPosition } : player
+    );
+    
     setPlayers(updatedPlayers);
 
     // Check if player landed on a question box
     const questionBox = questionBoxes.find((box) => box.position === newPosition);
     if (questionBox) {
-      setCurrentQuestion(questionBox.question);
+      // Get a random question based on player's position (difficulty progression)
+      const question = getRandomQuestion(newPosition);
+      setCurrentQuestion(question);
       setShowQuestion(true);
 
       // If it's a bot, automatically answer after a delay
       if (currentPlayer.isBot) {
         setBotThinking(true);
 
-        // Bot has 60-80% chance to answer correctly (improved bot logic)
+        // Bot has 60-80% chance to answer correctly
         const botSkillLevel = 0.6 + Math.random() * 0.2;
         const isCorrect = Math.random() < botSkillLevel;
 
@@ -418,7 +717,7 @@ function KnowledgeLadderGame() {
         const thinkingTime = 2000 + Math.random() * 2000;
 
         setTimeout(() => {
-          handleBotAnswer(isCorrect, questionBox.question);
+          handleBotAnswer(isCorrect, question);
           setBotThinking(false);
         }, thinkingTime);
       }
@@ -430,17 +729,18 @@ function KnowledgeLadderGame() {
     // Check if game is over
     if (newPosition === 100) {
       setGameOver(true);
-      setWinner(currentPlayer);
+      setWinner(updatedPlayers[currentPlayerIndex]);
     }
   };
 
   const handleBotAnswer = (isCorrect, question) => {
     const currentPlayer = players[currentPlayerIndex];
-    const updatedPlayers = [...players];
-
+    
+    let advanceSteps = 0;
+    let newPosition = currentPlayer.position;
+    
     if (isCorrect) {
       // Correct answer - advance based on difficulty
-      let advanceSteps = 0;
       switch (question.difficulty) {
         case "easy":
           advanceSteps = 3;
@@ -451,15 +751,12 @@ function KnowledgeLadderGame() {
         case "hard":
           advanceSteps = 8;
           break;
+        default:
+          advanceSteps = 3;
       }
 
-      let newPosition = currentPlayer.position + advanceSteps;
+      newPosition += advanceSteps;
       if (newPosition > 100) newPosition = 100;
-
-      updatedPlayers[currentPlayerIndex] = {
-        ...currentPlayer,
-        position: newPosition,
-      };
 
       setResultMessage(`${currentPlayer.name} answered correctly! Advanced ${advanceSteps} spaces.`);
       setResultEmoji("🎉");
@@ -485,36 +782,39 @@ function KnowledgeLadderGame() {
         case "hard":
           fallbackSteps = 6;
           break;
+        default:
+          fallbackSteps = 2;
       }
 
-      let newPosition = currentPlayer.position - fallbackSteps;
+      newPosition -= fallbackSteps;
       if (newPosition < 0) newPosition = 0;
-
-      updatedPlayers[currentPlayerIndex] = {
-        ...currentPlayer,
-        position: newPosition,
-      };
 
       setResultMessage(`${currentPlayer.name} answered incorrectly! Fell back ${fallbackSteps} spaces.`);
       setResultEmoji("😢");
     }
 
+    // Update player position using immutable update
+    const updatedPlayers = players.map((player, idx) => 
+      idx === currentPlayerIndex ? { ...player, position: newPosition } : player
+    );
+    
     setPlayers(updatedPlayers);
     setShowQuestion(false);
     setShowResult(true);
 
     // Check if game is over after answering
-    if (updatedPlayers[currentPlayerIndex].position === 100) {
+    if (newPosition === 100) {
       setGameOver(true);
       setWinner(updatedPlayers[currentPlayerIndex]);
     }
   };
 
   const nextPlayer = () => {
-    setCurrentPlayerIndex((currentPlayerIndex + 1) % players.length);
+    setCurrentPlayerIndex((prevIndex) => (prevIndex + 1) % players.length);
 
     // If next player is a bot, automatically roll dice after a delay
-    if (players[(currentPlayerIndex + 1) % players.length]?.isBot) {
+    const nextPlayerIndex = (currentPlayerIndex + 1) % players.length;
+    if (players[nextPlayerIndex]?.isBot) {
       setTimeout(() => {
         rollDice();
       }, 1500);
@@ -526,11 +826,12 @@ function KnowledgeLadderGame() {
 
     const isCorrect = selectedIndex === currentQuestion.correctAnswer;
     const currentPlayer = players[currentPlayerIndex];
-    const updatedPlayers = [...players];
-
+    
+    let advanceSteps = 0;
+    let newPosition = currentPlayer.position;
+    
     if (isCorrect) {
       // Correct answer - advance based on difficulty
-      let advanceSteps = 0;
       switch (currentQuestion.difficulty) {
         case "easy":
           advanceSteps = 3;
@@ -541,15 +842,12 @@ function KnowledgeLadderGame() {
         case "hard":
           advanceSteps = 8;
           break;
+        default:
+          advanceSteps = 3;
       }
 
-      let newPosition = currentPlayer.position + advanceSteps;
+      newPosition += advanceSteps;
       if (newPosition > 100) newPosition = 100;
-
-      updatedPlayers[currentPlayerIndex] = {
-        ...currentPlayer,
-        position: newPosition,
-      };
 
       setResultMessage(`Correct! You advance ${advanceSteps} spaces.`);
       setResultEmoji("🎉");
@@ -575,26 +873,28 @@ function KnowledgeLadderGame() {
         case "hard":
           fallbackSteps = 6;
           break;
+        default:
+          fallbackSteps = 2;
       }
 
-      let newPosition = currentPlayer.position - fallbackSteps;
+      newPosition -= fallbackSteps;
       if (newPosition < 0) newPosition = 0;
-
-      updatedPlayers[currentPlayerIndex] = {
-        ...currentPlayer,
-        position: newPosition,
-      };
 
       setResultMessage(`Wrong! You fall back ${fallbackSteps} spaces.`);
       setResultEmoji("😢");
     }
 
+    // Update player position using immutable update
+    const updatedPlayers = players.map((player, idx) => 
+      idx === currentPlayerIndex ? { ...player, position: newPosition } : player
+    );
+    
     setPlayers(updatedPlayers);
     setShowQuestion(false);
     setShowResult(true);
 
     // Check if game is over after answering
-    if (updatedPlayers[currentPlayerIndex].position === 100) {
+    if (newPosition === 100) {
       setGameOver(true);
       setWinner(updatedPlayers[currentPlayerIndex]);
     }
@@ -623,6 +923,7 @@ function KnowledgeLadderGame() {
     setWinner(null);
     setShowResult(false);
     setBotThinking(false);
+    setUsedQuestionIds(new Set()); // Reset used questions
   };
 
   // Render dice based on current value
@@ -662,10 +963,10 @@ function KnowledgeLadderGame() {
           position = (totalRows - row - 1) * totalCols + col + 1;
         }
 
-        // Check if any player is on this position
+        // Check if any player is on this position - use more efficient method
         const playersOnCell = players.filter((player) => player.position === position);
 
-        // Check if this is a question box
+        // Check if this is a question box - use more efficient lookup
         const isQuestionBox = questionBoxes.some((box) => box.position === position);
 
         const cellClasses = [
@@ -760,22 +1061,25 @@ function KnowledgeLadderGame() {
       <div className="game-content">
         <div className="game-header">
           <h1 className="game-title">Knowledge Ladder</h1>
-          <button className="home-button">
-            <Home /> Back to Home
-          </button>
+          <button className="home-button" onClick={() => window.location.href = "/"}>
+  <Home /> Back to Home
+</button>
+
         </div>
 
         {!gameStarted ? (
           renderPlayerSetup()
         ) : (
           <div className="game-layout">
+            {/* Board Container - Takes full width */}
             <div className="board-container">
               <div className="game-board">
                 {renderBoard()}
               </div>
             </div>
 
-            <div className="game-sidebar">
+            {/* Controls Section - Below the board */}
+            <div className="game-controls-section">
               <div className="game-controls">
                 <h2 className="sidebar-title">Game Controls</h2>
 
@@ -838,6 +1142,15 @@ function KnowledgeLadderGame() {
                   <li>Wrong answers make you fall back</li>
                   <li>First player to reach position 100 wins!</li>
                 </ul>
+                <div className="difficulty-info">
+                  <h3>Difficulty Progression:</h3>
+                  <p>Questions get harder as you advance on the board!</p>
+                  <ul>
+                    <li>Positions 1-30: Easy questions</li>
+                    <li>Positions 31-70: Medium questions</li>
+                    <li>Positions 71-100: Hard questions</li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
