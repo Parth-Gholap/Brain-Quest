@@ -4,7 +4,7 @@ Gamify your learning, habits, and wellness — one game at a time.
 
 Brain Quest is a web-based platform that turns education, health, and social awareness into fun, interactive experiences through engaging mini-games. Whether you're solving math puzzles, learning cybersecurity basics, or tracking your wellness, Brain Quest makes it exciting.
 
-🚀 Built for: Summer of CodeFest'25 Hackathon #SummerofCodefest #GSoCInnovators    
+🚀 Built for: Summer of CodeFest'25 Hackathon #SummerofCodefest #GSoCInnovators #GSocInnovationClub     
 👨‍💻 Team: The Code Architects — Abhiral Jain, Ayush Karan, Parth Gholap, Saket Jha  
 🌐 Live Demo: https://brain-quest-jet.vercel.app/  
 
@@ -82,7 +82,7 @@ To run this project locally on your machine:
 
 👥 Team: The Code Architects  
 🛠 Built with passion during Summer of CodeFest'25 Hackathon 
-#SummerofCodefest #GSoCInnovators
+#SummerofCodefest #GSoCInnovators #GSocInnovationClub 
 
 - Abhiral Jain  
 - Ayush Karan 
