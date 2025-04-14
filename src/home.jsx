@@ -60,6 +60,7 @@ const HomePage = () => {
           <GameCard title="Code Breaker" description="Solve computer science puzzles and learn programming concepts" icon={<Code className="icon" />} href="/code-breaker" active={true} />
           <GameCard title="Math Mastery" description="Solve math problems including calculus concepts like integration and differentiation" icon={<Calculator className="icon" />} href="/math-ninja" active={true} />
           <GameCard title="Biology Quest" description="Explore biological concepts through case studies and knowledge challenges" icon={<Microscope className="icon" />} href="/biology-quest" active={true} />
+          <GameCard title="⌚ Attack Simulator " description="React to threats in real-time." icon={<Gamepad2 className="icon" />} href="/AttackSimulator" active={true} />
         </div>
 
         {showHiddenGame && (
