@@ -61,6 +61,7 @@ const HomePage = () => {
           <GameCard title="Math Mastery" description="Solve math problems including calculus concepts like integration and differentiation" icon={<Calculator className="icon" />} href="/math-ninja" active={true} />
           <GameCard title="Biology Quest" description="Explore biological concepts through case studies and knowledge challenges" icon={<Microscope className="icon" />} href="/biology-quest" active={true} />
           <GameCard title="⌚ Attack Simulator " description="React to threats in real-time." href="/AttackSimulator" active={true} />
+          <GameCard title="🎮 More Games Coming Soon..." description=""></GameCard>
         </div>
 
         {showHiddenGame && (
