@@ -90,6 +90,7 @@ To run this project locally on your machine:
 - Ayush Karan 
 - Parth Gholap  
 - Saket Jha
+- Om Patel
 
 ---
 
