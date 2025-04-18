@@ -27,6 +27,241 @@ const challenges = [
     difficulty: "easy",
     category: "syntax",
   },
+  {
+    id: 3,
+    title: "Function Syntax",
+    description: "Which is a correct way to write an arrow function in JavaScript?",
+    codeSnippet: "",
+    options: [
+      "function add(a, b) { return a + b; }",
+      "const add = (a, b) => { return a + b; }",
+      "const add = function(a, b) { return a + b; }",
+      "function add = (a, b) => { return a + b; }",
+    ],
+    correctAnswer: 1,
+    explanation:
+      "Arrow functions are defined using the => syntax. The correct form is 'const functionName = (parameters) => { code }'.",
+    difficulty: "medium",
+    category: "syntax",
+  },
+
+  // Concepts Challenges
+  {
+    id: 4,
+    title: "Object-Oriented Programming",
+    description: "Which concept describes bundling data and methods that operate on that data within a single unit?",
+    codeSnippet: "",
+    options: ["Inheritance", "Polymorphism", "Encapsulation", "Abstraction"],
+    correctAnswer: 2,
+    explanation:
+      "Encapsulation is the bundling of data and methods that operate on that data within a single unit, like a class.",
+    difficulty: "medium",
+    category: "concepts",
+  },
+  {
+    id: 5,
+    title: "Data Structures",
+    description: "Which data structure operates on a Last-In-First-Out (LIFO) principle?",
+    codeSnippet: "",
+    options: ["Queue", "Stack", "Linked List", "Binary Tree"],
+    correctAnswer: 1,
+    explanation:
+      "A stack follows the Last-In-First-Out (LIFO) principle, where the last element added is the first one to be removed.",
+    difficulty: "medium",
+    category: "concepts",
+  },
+  {
+    id: 6,
+    title: "Recursion",
+    description: "What is recursion in programming?",
+    codeSnippet: "",
+    options: [
+      "A loop that runs infinitely",
+      "A function that calls itself",
+      "A method to optimize code",
+      "A way to declare variables",
+    ],
+    correctAnswer: 1,
+    explanation: "Recursion is when a function calls itself to solve a smaller instance of the same problem.",
+    difficulty: "easy",
+    category: "concepts",
+  },
+
+  // Debugging Challenges
+  {
+    id: 7,
+    title: "Find the Bug",
+    description: "What's wrong with this code?",
+    codeSnippet: `function calculateSum(numbers) {
+  let sum = 0;
+  for (let i = 0; i <= numbers.length; i++) {
+    sum += numbers[i];
+  }
+  return sum;
+}`,
+    options: [
+      "The sum variable should be initialized to null",
+      "The loop should start from i = 1",
+      "The loop condition should be i < numbers.length",
+      "The function name is incorrect",
+    ],
+    correctAnswer: 2,
+    explanation:
+      "The loop condition should be i < numbers.length (not <=). With <= it will try to access an index that doesn't exist.",
+    difficulty: "medium",
+    category: "debugging",
+  },
+  {
+    id: 8,
+    title: "Scope Error",
+    description: "What's wrong with this code?",
+    codeSnippet: `function printMessage() {
+  if (true) {
+    let message = "Hello";
+  }
+  console.log(message);
+}`,
+    options: [
+      "The if condition is always true",
+      "message is not defined in the scope where it's being accessed",
+      "console.log should be inside the if block",
+      "The function has no return statement",
+    ],
+    correctAnswer: 1,
+    explanation:
+      "The variable 'message' is declared with 'let' inside the if block, so it's only accessible within that block. Outside the block, it's not defined.",
+    difficulty: "medium",
+    category: "debugging",
+  },
+  {
+    id: 9,
+    title: "Async Bug",
+    description: "What's wrong with this code?",
+    codeSnippet: `function fetchData() {
+  let data;
+  fetch('https://api.example.com/data')
+    .then(response => response.json())
+    .then(result => {
+      data = result;
+    });
+  return data;
+}`,
+    options: [
+      "The fetch API is used incorrectly",
+      "The function should be async",
+      "The data is returned before the fetch completes",
+      "The .then() syntax is incorrect",
+    ],
+    correctAnswer: 2,
+    explanation:
+      "The function returns 'data' immediately, before the fetch operation completes. The fetch is asynchronous, so 'data' will be undefined when returned.",
+    difficulty: "hard",
+    category: "debugging",
+  },
+
+  // Algorithms Challenges
+  {
+    id: 10,
+    title: "Time Complexity",
+    description: "What is the time complexity of binary search?",
+    codeSnippet: "",
+    options: ["O(n)", "O(n²)", "O(log n)", "O(n log n)"],
+    correctAnswer: 2,
+    explanation:
+      "Binary search has a time complexity of O(log n) because it divides the search interval in half with each step.",
+    difficulty: "medium",
+    category: "algorithms",
+  },
+  {
+    id: 11,
+    title: "Sorting Algorithm",
+    description: "Which sorting algorithm has the worst average-case time complexity?",
+    codeSnippet: "",
+    options: ["Quick Sort", "Merge Sort", "Bubble Sort", "Heap Sort"],
+    correctAnswer: 2,
+    explanation:
+      "Bubble Sort has an average time complexity of O(n²), which is worse than Quick Sort, Merge Sort, and Heap Sort, which all have O(n log n).",
+    difficulty: "hard",
+    category: "algorithms",
+  },
+  {
+    id: 12,
+    title: "Algorithm Selection",
+    description: "Which algorithm would be best for finding the shortest path in a weighted graph?",
+    codeSnippet: "",
+    options: ["Depth-First Search (DFS)", "Breadth-First Search (BFS)", "Dijkstra's Algorithm", "Binary Search"],
+    correctAnswer: 2,
+    explanation:
+      "Dijkstra's Algorithm is specifically designed to find the shortest path in a weighted graph, as long as there are no negative weights.",
+    difficulty: "hard",
+    category: "algorithms",
+  },
+
+  // More Syntax Challenges
+  {
+    id: 13,
+    title: "String Methods",
+    description: "Which method is used to extract a portion of a string without modifying the original string?",
+    codeSnippet: "const text = 'Hello, World!';",
+    options: ["text.splice(7, 5);", "text.substring(7, 12);", "text.replace('World', '');", "text.indexOf('World');"],
+    correctAnswer: 1,
+    explanation:
+      "The substring() method extracts characters from a string between two specified indices without modifying the original string.",
+    difficulty: "easy",
+    category: "syntax",
+  },
+  {
+    id: 14,
+    title: "Loop Syntax",
+    description: "Which loop would be best for iterating over properties of an object?",
+    codeSnippet: "const person = { name: 'John', age: 30, job: 'Developer' };",
+    options: [
+      "for (let i = 0; i < person.length; i++)",
+      "for (let prop in person)",
+      "for (let item of person)",
+      "while (person.hasNext())",
+    ],
+    correctAnswer: 1,
+    explanation: "The for...in loop is specifically designed to iterate over the enumerable properties of an object.",
+    difficulty: "medium",
+    category: "syntax",
+  },
+
+  // More Concepts Challenges
+  {
+    id: 15,
+    title: "Asynchronous Programming",
+    description: "What is a Promise in JavaScript?",
+    codeSnippet: "",
+    options: [
+      "A function that always returns a value",
+      "A proxy for a value not necessarily known when the promise is created",
+      "A way to declare global variables",
+      "A method to optimize code execution",
+    ],
+    correctAnswer: 1,
+    explanation:
+      "A Promise is an object representing the eventual completion or failure of an asynchronous operation and its resulting value.",
+    difficulty: "hard",
+    category: "concepts",
+  },
+  {
+    id: 16,
+    title: "Memory Management",
+    description: "What is garbage collection in programming?",
+    codeSnippet: "",
+    options: [
+      "Manually deleting variables when they're no longer needed",
+      "Automatic process of freeing memory that's no longer in use",
+      "Compressing data to save memory",
+      "Allocating memory for new variables",
+    ],
+    correctAnswer: 1,
+    explanation:
+      "Garbage collection is an automatic process in which the runtime system reclaims memory that's no longer being used by the program.",
+    difficulty: "medium",
+    category: "concepts",
+  },
   // Add more challenges here as per your original code...
 ];
 
